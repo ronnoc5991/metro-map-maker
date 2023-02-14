@@ -1,24 +1,37 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import useResizeObserver from "@react-hook/resize-observer";
+import { useRef, useState } from "react";
+import Viewport from "./components/Viewport/Viewport";
+import "./App.css";
+
+type ElementDimensions = { width: number; height: number };
 
 function App() {
+  const container = useRef<HTMLDivElement | null>(null);
+  const [dimensions, setDimensions] = useState<ElementDimensions>({
+    width: 0,
+    height: 0,
+  });
+
+  useResizeObserver(container, (entry) => {
+    const { width, height } = entry.contentRect;
+    setDimensions({ width, height });
+  });
+
+  const onClick = () => {
+    console.log("click in parent");
+  };
+
+  const onWheel = () => {
+    console.log("wheel in parent");
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="App" ref={container}>
+      <Viewport
+        dimensions={dimensions}
+        onClick={onClick}
+        onWheel={onWheel}
+      ></Viewport>
     </div>
   );
 }
