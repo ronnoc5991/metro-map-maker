@@ -1,45 +1,41 @@
 import {
   FunctionComponent,
   MouseEventHandler,
+  useCallback,
   useEffect,
   useRef,
-  WheelEventHandler,
 } from "react";
-import { useAnimationFrame } from "../../hooks/useAnimationFrame";
+import { WindowBounds } from "../../types/WindowBounds";
+import { Dimensions } from "../../types/Dimensions";
+import useAnimationFrame from "../../hooks/useAnimationFrame";
+import drawGrid from "./utils/drawGrid";
 import "./styles.css";
 
-const FRAMES_PER_SECOND = 60;
-const INTERVAL = 1000 / FRAMES_PER_SECOND;
+const GRID_CELL_SIZE = 25; // decide where this lives
 
 type Props = {
-  dimensions: {
-    width: number;
-    height: number;
-  };
-  onClick: MouseEventHandler;
-  onWheel: WheelEventHandler;
+  dimensions: Dimensions;
+  bounds: WindowBounds;
+  onMouseDown: MouseEventHandler;
+  onMouseUp: MouseEventHandler;
+  onMouseMove: MouseEventHandler;
 };
 
 const Viewport: FunctionComponent<Props> = ({
   dimensions,
-  onClick,
-  onWheel,
+  bounds,
+  onMouseDown,
+  onMouseUp,
+  onMouseMove,
 }: Props): JSX.Element => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const context = useRef<CanvasRenderingContext2D | null>(null);
-  const previousFrameTime = useRef<number>();
 
-  const update = (time: number) => {
-    if (previousFrameTime.current === undefined)
-      previousFrameTime.current = time;
-
-    const delta = time - previousFrameTime.current;
-
-    if (delta > INTERVAL) {
-      console.log("draw");
-      previousFrameTime.current = time;
-    }
-  };
+  const update = useCallback(() => {
+    if (!context.current) return;
+    context.current.clearRect(0, 0, dimensions.width, dimensions.height);
+    drawGrid(bounds, dimensions, GRID_CELL_SIZE, context.current);
+  }, [bounds, dimensions]);
 
   useEffect(() => {
     if (!canvasRef.current) return;
@@ -54,8 +50,9 @@ const Viewport: FunctionComponent<Props> = ({
       ref={canvasRef}
       width={dimensions.width}
       height={dimensions.height}
-      onClick={onClick}
-      onWheel={onWheel}
+      onMouseDown={onMouseDown}
+      onMouseUp={onMouseUp}
+      onMouseMove={onMouseMove}
     ></canvas>
   );
 };
