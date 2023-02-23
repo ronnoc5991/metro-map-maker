@@ -1,9 +1,9 @@
 import { FunctionComponent, useRef, useState } from "react";
 import useResizeObserver from "@react-hook/resize-observer";
-import { Dimensions } from "../types/Dimensions";
-import useWindow from "../hooks/useWindow";
-import useMouse from "../hooks/useMouse";
-import Viewport from "../components/Viewport/Viewport";
+import { Dimensions } from "./types/Dimensions";
+import useWindow from "./hooks/useWindow";
+import useMouse from "./hooks/useMouse";
+import Viewport from "./components/Viewport/Viewport";
 import "./App.css";
 
 const App: FunctionComponent = () => {
