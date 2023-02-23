@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Dimensions } from "../types/Dimensions";
 import { WindowBounds } from "../types/WindowBounds";
 
@@ -14,6 +14,7 @@ const useWindow = (
   bounds: WindowBounds;
   onDrag: (deltaX: number, deltaY: number) => void;
 } => {
+  const previousDimensions = useRef<Dimensions>(dimensions);
   const [bounds, setBounds] = useState<WindowBounds>({
     minX: 0 - dimensions.width / 2,
     maxX: 0 + dimensions.width / 2,
@@ -34,16 +35,32 @@ const useWindow = (
   );
 
   useEffect(() => {
-    // what is the question here?
-    // how much did the dimensions change as a proportion of their previous size?
-    // update the bounds by the same amount?
-    // TODO: compare previous dimensions to new dimensions to derive new bounds
+    const proportionalChangeInWidth =
+      dimensions.width / previousDimensions.current.width;
+    const proportionalChangeInHeight =
+      dimensions.height / previousDimensions.current.height;
+
+    const previousBoundsWidth = bounds.maxX - bounds.minX;
+    const previousBoundsHeight = bounds.maxY - bounds.minY;
+
+    const newBoundsWidth = previousBoundsWidth * proportionalChangeInWidth;
+    const newBoundsHeight = previousBoundsHeight * proportionalChangeInHeight;
+
+    const previouslyCenteredX = bounds.minX + previousBoundsWidth / 2;
+    const previouslyCenteredY = bounds.minY + previousBoundsHeight / 2;
+
+    const halfNewBoundsWidth = newBoundsWidth / 2;
+    const halfNewBoundsHeight = newBoundsHeight / 2;
+
     setBounds({
-      minX: 0 - dimensions.width / 2,
-      maxX: 0 + dimensions.width / 2,
-      minY: 0 - dimensions.height / 2,
-      maxY: 0 + dimensions.height / 2,
+      minX: previouslyCenteredX - halfNewBoundsWidth,
+      maxX: previouslyCenteredX + halfNewBoundsWidth,
+      minY: previouslyCenteredY - halfNewBoundsHeight,
+      maxY: previouslyCenteredY + halfNewBoundsHeight,
     });
+
+    previousDimensions.current.width = dimensions.width;
+    previousDimensions.current.height = dimensions.height;
   }, [dimensions]);
 
   // TODO: Create an onZoom
