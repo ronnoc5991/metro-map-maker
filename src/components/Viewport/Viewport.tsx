@@ -2,24 +2,23 @@ import {
   FunctionComponent,
   MouseEventHandler,
   WheelEventHandler,
-  MutableRefObject,
-  useCallback,
   useEffect,
   useRef,
 } from "react";
+import { CustomDragEventHandler } from "../../types/CustomDragEventHandler";
 import { WindowBounds } from "../../types/WindowBounds";
 import { Dimensions } from "../../types/Dimensions";
-import useAnimationFrame from "../../hooks/useAnimationFrame";
+import useMouse from "./hooks/useMouse";
 import drawGrid from "./utils/drawGrid";
 import "./styles.css";
 
 type Props = {
   dimensions: Dimensions;
-  bounds: MutableRefObject<WindowBounds>;
+  bounds: WindowBounds;
   gridCellSize: number;
   onMouseDown: MouseEventHandler;
   onMouseUp: MouseEventHandler;
-  onMouseMove: MouseEventHandler;
+  onDrag: CustomDragEventHandler;
   onWheel: WheelEventHandler;
 };
 
@@ -28,25 +27,25 @@ const Viewport: FunctionComponent<Props> = ({
   bounds,
   gridCellSize,
   onMouseDown,
+  onDrag,
   onMouseUp,
-  onMouseMove,
   onWheel,
-}: Props): JSX.Element => {
+}) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const context = useRef<CanvasRenderingContext2D | null>(null);
 
-  const update = useCallback(() => {
-    if (!context.current) return;
-    context.current.clearRect(0, 0, dimensions.width, dimensions.height);
-    drawGrid(bounds.current, dimensions, gridCellSize, context.current);
-  }, [bounds, dimensions, gridCellSize]);
+  const { onDown, onMove, onUp } = useMouse(onMouseDown, onDrag, onMouseUp);
 
   useEffect(() => {
     if (!canvasRef.current) return;
     context.current = canvasRef.current.getContext("2d");
   }, []);
 
-  useAnimationFrame(update);
+  useEffect(() => {
+    if (!context.current) return;
+    context.current.clearRect(0, 0, dimensions.width, dimensions.height);
+    drawGrid(bounds, dimensions, gridCellSize, context.current);
+  });
 
   return (
     <canvas
@@ -54,11 +53,11 @@ const Viewport: FunctionComponent<Props> = ({
       ref={canvasRef}
       width={dimensions.width}
       height={dimensions.height}
-      onMouseDown={onMouseDown}
-      onMouseUp={onMouseUp}
-      onMouseMove={onMouseMove}
+      onMouseDown={onDown}
+      onMouseMove={onMove}
+      onMouseUp={onUp}
       onWheel={onWheel}
-    ></canvas>
+    />
   );
 };
 
