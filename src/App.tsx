@@ -6,6 +6,8 @@ import useMouse from "./hooks/useMouse";
 import Viewport from "./components/Viewport/Viewport";
 import "./App.css";
 
+const GRID_CELL_SIZE = 50;
+
 const App: FunctionComponent = () => {
   const container = useRef<HTMLDivElement | null>(null);
   const [dimensions, setDimensions] = useState<Dimensions>({
@@ -17,7 +19,7 @@ const App: FunctionComponent = () => {
     setDimensions({ width, height });
   });
 
-  const { bounds, onDrag } = useWindow(dimensions);
+  const { bounds, onDrag, onZoom } = useWindow(dimensions);
   const { onDown, onMove, onUp } = useMouse(onDrag);
 
   return (
@@ -25,9 +27,11 @@ const App: FunctionComponent = () => {
       <Viewport
         dimensions={dimensions}
         bounds={bounds}
+        gridCellSize={GRID_CELL_SIZE}
         onMouseDown={onDown}
         onMouseUp={onUp}
         onMouseMove={onMove}
+        onWheel={onZoom}
       ></Viewport>
     </div>
   );

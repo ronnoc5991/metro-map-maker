@@ -1,6 +1,8 @@
 import {
   FunctionComponent,
   MouseEventHandler,
+  WheelEventHandler,
+  MutableRefObject,
   useCallback,
   useEffect,
   useRef,
@@ -11,22 +13,24 @@ import useAnimationFrame from "../../hooks/useAnimationFrame";
 import drawGrid from "./utils/drawGrid";
 import "./styles.css";
 
-const GRID_CELL_SIZE = 25; // decide where this lives
-
 type Props = {
   dimensions: Dimensions;
-  bounds: WindowBounds;
+  bounds: MutableRefObject<WindowBounds>;
+  gridCellSize: number;
   onMouseDown: MouseEventHandler;
   onMouseUp: MouseEventHandler;
   onMouseMove: MouseEventHandler;
+  onWheel: WheelEventHandler;
 };
 
 const Viewport: FunctionComponent<Props> = ({
   dimensions,
   bounds,
+  gridCellSize,
   onMouseDown,
   onMouseUp,
   onMouseMove,
+  onWheel,
 }: Props): JSX.Element => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const context = useRef<CanvasRenderingContext2D | null>(null);
@@ -34,8 +38,8 @@ const Viewport: FunctionComponent<Props> = ({
   const update = useCallback(() => {
     if (!context.current) return;
     context.current.clearRect(0, 0, dimensions.width, dimensions.height);
-    drawGrid(bounds, dimensions, GRID_CELL_SIZE, context.current);
-  }, [bounds, dimensions]);
+    drawGrid(bounds.current, dimensions, gridCellSize, context.current);
+  }, [bounds, dimensions, gridCellSize]);
 
   useEffect(() => {
     if (!canvasRef.current) return;
@@ -53,6 +57,7 @@ const Viewport: FunctionComponent<Props> = ({
       onMouseDown={onMouseDown}
       onMouseUp={onMouseUp}
       onMouseMove={onMouseMove}
+      onWheel={onWheel}
     ></canvas>
   );
 };

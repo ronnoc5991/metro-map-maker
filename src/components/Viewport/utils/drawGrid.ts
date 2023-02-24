@@ -17,7 +17,10 @@ const drawGrid = (
   context: CanvasRenderingContext2D
 ) => {
   const getVerticalLines = getLines((validValue) => {
-    const xValue = validValue - bounds.minX;
+    const xValue =
+      dimensions.width *
+      ((validValue - bounds.minX) / (bounds.maxX - bounds.minX));
+
     return {
       from: { x: xValue, y: 0 },
       to: { x: xValue, y: dimensions.height },
@@ -25,7 +28,9 @@ const drawGrid = (
   });
 
   const getHorizontalLines: LineGetter = getLines((validValue) => {
-    const yValue = validValue - bounds.minY;
+    const yValue =
+      dimensions.height *
+      ((validValue - bounds.minY) / (bounds.maxY - bounds.minY));
     return {
       from: { x: 0, y: yValue },
       to: { x: dimensions.width, y: yValue },
