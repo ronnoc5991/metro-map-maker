@@ -1,4 +1,4 @@
-import { MouseEventHandler, useCallback, useState } from "react";
+import { MouseEventHandler, useCallback, useRef } from "react";
 import { Position } from "../types/Position";
 
 const DRAGGING_THRESHOLD = 5;
@@ -10,41 +10,40 @@ const useMouse = (
   onUp: MouseEventHandler;
   onMove: MouseEventHandler;
 } => {
-  const [isDown, setIsDown] = useState(false);
-  const [isDragging, setIsDragging] = useState(false);
-  const [previousPosition, setPreviousPosition] = useState<Position>({
-    x: 0,
-    y: 0,
-  });
+  const isDown = useRef(false);
+  const isDragging = useRef(false);
+  const previousPosition = useRef<Position>({ x: 0, y: 0 });
 
   const onDown: MouseEventHandler = useCallback((event) => {
-    setIsDown(true);
-    setPreviousPosition({ x: event.clientX, y: event.clientY });
+    isDown.current = true;
+    previousPosition.current = { x: event.clientX, y: event.clientY };
   }, []);
 
   const onMove: MouseEventHandler = useCallback(
     ({ clientX, clientY }) => {
-      if (!isDown) return;
+      if (!isDown.current) return;
 
-      if (isDragging) {
-        const deltaX = clientX - previousPosition.x;
-        const deltaY = clientY - previousPosition.y;
-        setPreviousPosition({ x: clientX, y: clientY });
+      if (isDragging.current) {
+        const deltaX = clientX - previousPosition.current.x;
+        const deltaY = clientY - previousPosition.current.y;
+        previousPosition.current = { x: clientX, y: clientY };
         onDrag(deltaX, deltaY);
         return;
       }
 
-      if (hasStartedDragging(previousPosition, { x: clientX, y: clientY })) {
-        setPreviousPosition({ x: clientX, y: clientY });
-        setIsDragging(true);
+      if (
+        hasStartedDragging(previousPosition.current, { x: clientX, y: clientY })
+      ) {
+        previousPosition.current = { x: clientX, y: clientY };
+        isDragging.current = true;
       }
     },
-    [isDown, isDragging, onDrag, previousPosition]
+    [onDrag]
   );
 
   const onUp: MouseEventHandler = useCallback(() => {
-    setIsDown(false);
-    setIsDragging(false);
+    isDown.current = false;
+    isDragging.current = false;
   }, []);
 
   return { onDown, onMove, onUp };
