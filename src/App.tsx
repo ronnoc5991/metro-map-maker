@@ -1,6 +1,5 @@
-import { FunctionComponent, useRef, useState } from "react";
-import useResizeObserver from "@react-hook/resize-observer";
-import { Dimensions } from "./types/Dimensions";
+import { FunctionComponent, useRef } from "react";
+import useDimensions from "./hooks/useDimensions";
 import useWindow from "./hooks/useWindow";
 import useMouse from "./hooks/useMouse";
 import Viewport from "./components/Viewport/Viewport";
@@ -10,14 +9,7 @@ const GRID_CELL_SIZE = 50;
 
 const App: FunctionComponent = () => {
   const container = useRef<HTMLDivElement | null>(null);
-  const [dimensions, setDimensions] = useState<Dimensions>({
-    width: window.innerWidth,
-    height: window.innerHeight,
-  });
-  useResizeObserver(container, (entry) => {
-    const { width, height } = entry.contentRect;
-    setDimensions({ width, height });
-  });
+  const { dimensions } = useDimensions(container);
 
   const { bounds, onDrag, onZoom } = useWindow(dimensions);
   const { onDown, onMove, onUp } = useMouse(onDrag);
