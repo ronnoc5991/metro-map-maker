@@ -92,13 +92,15 @@ const useWindow = (
 
   const onZoom: WheelEventHandler = useCallback(
     (event) => {
+      const scaledZoomStepSize =
+        ZOOM_STEP_SIZE / (DEFAULT_ZOOM_PERCENTAGE / zoomPercentage.current);
       if (event.deltaY > 0 && zoomPercentage.current > MIN_ZOOM_PERCENTAGE) {
-        zoomPercentage.current -= ZOOM_STEP_SIZE;
+        zoomPercentage.current -= scaledZoomStepSize;
       } else if (
         event.deltaY < 0 &&
         zoomPercentage.current < MAX_ZOOM_PERCENTAGE
       ) {
-        zoomPercentage.current += ZOOM_STEP_SIZE;
+        zoomPercentage.current += scaledZoomStepSize;
       } else return;
 
       const horizontaFactor = event.clientX / previousDimensions.current.width;
