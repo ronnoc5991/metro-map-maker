@@ -42,12 +42,15 @@ const drawGrid = (
     ...getHorizontalLines(bounds.minY, bounds.maxY, gridCellSize),
   ];
 
+  context.save();
+  context.translate(0.5, 0.5); // hack to get crisper lines
   lines.forEach(({ from, to }) => {
     context.beginPath();
     context.moveTo(from.x, from.y);
     context.lineTo(to.x, to.y);
     context.stroke();
   });
+  context.restore();
 };
 
 function getLines(createLine: (validValue: number) => Line): LineGetter {
