@@ -5,14 +5,16 @@ import {
   useEffect,
   useRef,
 } from "react";
+import clsx from "clsx";
 import { CustomDragEventHandler } from "../../types/CustomDragEventHandler";
+import { BaseComponentProps } from "../../types/BaseComponentProps";
 import { WindowBounds } from "../../types/WindowBounds";
 import { Dimensions } from "../../types/Dimensions";
 import useMouse from "./hooks/useMouse";
 import drawGrid from "./utils/drawGrid";
 import "./styles.css";
 
-type Props = {
+type Props = BaseComponentProps & {
   dimensions: Dimensions;
   bounds: WindowBounds;
   gridCellSize: number;
@@ -23,6 +25,7 @@ type Props = {
 };
 
 const Viewport: FunctionComponent<Props> = ({
+  className,
   dimensions,
   bounds,
   gridCellSize,
@@ -49,7 +52,7 @@ const Viewport: FunctionComponent<Props> = ({
 
   return (
     <canvas
-      className="Viewport"
+      className={clsx("Viewport", className)}
       ref={canvasRef}
       width={dimensions.width}
       height={dimensions.height}

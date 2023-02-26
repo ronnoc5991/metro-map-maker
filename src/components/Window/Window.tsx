@@ -7,16 +7,22 @@ import {
   useState,
   WheelEventHandler,
 } from "react";
+import clsx from "clsx";
+import { BaseComponentProps } from "../../types/BaseComponentProps";
 import { CustomClickHandler } from "../../types/CustomClickHandler";
 import { CustomDragEventHandler } from "../../types/CustomDragEventHandler";
 import { Dimensions } from "../../types/Dimensions";
 import { WindowBounds } from "../../types/WindowBounds";
+import Button from "../Button/Button";
+import ControlPanel from "../ControlPanel/ControlPanel";
 import Viewport from "../Viewport/Viewport";
+import isZoomAllowed from "./utils/isZoomAllowed";
 import config from "./config/config";
+import "./styles.css";
 
-type Props = {
-  isDraggable: boolean;
+type Props = BaseComponentProps & {
   dimensions: Dimensions;
+  isDraggable: boolean;
   gridCellSize: number;
   onMouseDown: CustomClickHandler;
   onDrag: CustomDragEventHandler;
@@ -30,6 +36,7 @@ const Window: FunctionComponent<Props> = ({
   onMouseDown,
   onDrag,
   onMouseUp,
+  className,
 }) => {
   const zoomPercentage = useRef(config.DEFAULT_ZOOM_PERCENTAGE);
   const previousDimensions = useRef<Dimensions>(dimensions);
@@ -121,7 +128,7 @@ const Window: FunctionComponent<Props> = ({
 
   const onZoom: WheelEventHandler = (event) => {
     const scaledZoomStepSize =
-      config.ZOOM_STEP_SIZE /
+      config.ZOOM_SCROLL_STEP_SIZE /
       (config.DEFAULT_ZOOM_PERCENTAGE / zoomPercentage.current);
     if (
       event.deltaY > 0 &&
@@ -135,22 +142,44 @@ const Window: FunctionComponent<Props> = ({
       zoomPercentage.current += scaledZoomStepSize;
     } else return;
 
-    const horizontaFactor = event.clientX / previousDimensions.current.width;
+    const horizontalFactor = event.clientX / previousDimensions.current.width;
     const verticalFactor = event.clientY / previousDimensions.current.height;
 
-    resizeBounds(previousDimensions.current, horizontaFactor, verticalFactor);
+    resizeBounds(previousDimensions.current, horizontalFactor, verticalFactor);
+  };
+
+  const onZoomIn = () => {
+    if (!isZoomAllowed(config.ZOOM_BUTTON_STEP_SIZE, zoomPercentage.current))
+      return;
+    const allowance = config.MAX_ZOOM_PERCENTAGE - zoomPercentage.current;
+    zoomPercentage.current += Math.min(allowance, config.ZOOM_BUTTON_STEP_SIZE);
+    resizeBounds(previousDimensions.current);
+  };
+
+  const onZoomOut = () => {
+    if (!isZoomAllowed(-config.ZOOM_BUTTON_STEP_SIZE, zoomPercentage.current))
+      return;
+    const allowance = zoomPercentage.current - config.MIN_ZOOM_PERCENTAGE;
+    zoomPercentage.current -= Math.min(allowance, config.ZOOM_BUTTON_STEP_SIZE);
+    resizeBounds(previousDimensions.current);
   };
 
   return (
-    <Viewport
-      bounds={bounds}
-      dimensions={dimensions}
-      gridCellSize={gridCellSize}
-      onMouseDown={translateMousePosition(onMouseDown)}
-      onDrag={onWindowDrag}
-      onMouseUp={translateMousePosition(onMouseUp)}
-      onWheel={onZoom}
-    />
+    <div className={clsx("Window", className)}>
+      <Viewport
+        bounds={bounds}
+        dimensions={dimensions}
+        gridCellSize={gridCellSize}
+        onMouseDown={translateMousePosition(onMouseDown)}
+        onDrag={onWindowDrag}
+        onMouseUp={translateMousePosition(onMouseUp)}
+        onWheel={onZoom}
+      />
+      <ControlPanel className="zoom-control-panel">
+        <Button onClick={onZoomIn}>+</Button>
+        <Button onClick={onZoomOut}>-</Button>
+      </ControlPanel>
+    </div>
   );
 };
 
