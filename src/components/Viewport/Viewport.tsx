@@ -1,34 +1,16 @@
-import {
-  FunctionComponent,
-  MouseEventHandler,
-  WheelEventHandler,
-  useEffect,
-  useRef,
-} from "react";
+import { FunctionComponent, useEffect, useRef } from "react";
 import clsx from "clsx";
-import { CustomDragEventHandler } from "../../types/CustomDragEventHandler";
-import { BaseComponentProps } from "../../types/BaseComponentProps";
-import { WindowBounds } from "../../types/WindowBounds";
-import { Dimensions } from "../../types/Dimensions";
+import drawGridLines from "./utils/drawGridLines";
+import drawStations from "./utils/drawStations";
 import useMouse from "./hooks/useMouse";
-import drawGrid from "./utils/drawGrid";
+import { ViewportProps } from "./types";
 import "./styles.css";
 
-type Props = BaseComponentProps & {
-  dimensions: Dimensions;
-  bounds: WindowBounds;
-  gridCellSize: number;
-  onMouseDown: MouseEventHandler;
-  onMouseUp: MouseEventHandler;
-  onDrag: CustomDragEventHandler;
-  onWheel: WheelEventHandler;
-};
-
-const Viewport: FunctionComponent<Props> = ({
-  className,
+const Viewport: FunctionComponent<ViewportProps> = ({
   dimensions,
-  bounds,
-  gridCellSize,
+  gridLines,
+  stations,
+  className,
   onMouseDown,
   onDrag,
   onMouseUp,
@@ -47,13 +29,14 @@ const Viewport: FunctionComponent<Props> = ({
   useEffect(() => {
     if (!context.current) return;
     context.current.clearRect(0, 0, dimensions.width, dimensions.height);
-    drawGrid(bounds, dimensions, gridCellSize, context.current);
+    drawGridLines(gridLines, context.current);
+    drawStations(stations, context.current);
   });
 
   return (
     <canvas
-      className={clsx("Viewport", className)}
       ref={canvasRef}
+      className={clsx("Viewport", className)}
       width={dimensions.width}
       height={dimensions.height}
       onMouseDown={onDown}

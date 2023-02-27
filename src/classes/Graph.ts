@@ -3,15 +3,9 @@ import Vertex from "./Vertex";
 import Edge from "./Edge";
 
 export default class Graph {
-  public vertices: Array<Vertex>;
-  public edges: Array<Edge>;
-  private vertexCount: number;
-
-  constructor() {
-    this.vertices = [];
-    this.edges = [];
-    this.vertexCount = 0;
-  }
+  public vertices: Array<Vertex> = [];
+  public edges: Array<Edge> = [];
+  private vertexCount: number = 0;
 
   public createVertex(position: Position): Vertex {
     this.vertexCount += 1;

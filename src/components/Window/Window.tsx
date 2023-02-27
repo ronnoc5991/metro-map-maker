@@ -8,61 +8,50 @@ import {
   WheelEventHandler,
 } from "react";
 import clsx from "clsx";
-import { BaseComponentProps } from "../../types/BaseComponentProps";
 import { CustomClickHandler } from "../../types/CustomClickHandler";
 import { CustomDragEventHandler } from "../../types/CustomDragEventHandler";
-import { Dimensions } from "../../types/Dimensions";
 import { WindowBounds } from "../../types/WindowBounds";
-import Button from "../Button/Button";
+import { WindowProps } from "./types";
+import { getWindowPositionFromViewportPosition } from "./utils/unitTranslation";
+import getDrawableStations from "./utils/getDrawableStations";
+import getGridLines from "./utils/getGridLines";
+import isZoomAllowed from "./utils/isZoomAllowed";
 import ControlPanel from "../ControlPanel/ControlPanel";
 import Viewport from "../Viewport/Viewport";
-import isZoomAllowed from "./utils/isZoomAllowed";
+import Button from "../Button/Button";
 import config from "./config/config";
 import "./styles.css";
 
-type Props = BaseComponentProps & {
-  dimensions: Dimensions;
-  isDraggable: boolean;
-  gridCellSize: number;
-  onMouseDown: CustomClickHandler;
-  onDrag: CustomDragEventHandler;
-  onMouseUp: CustomClickHandler;
-};
-
-const Window: FunctionComponent<Props> = ({
+const Window: FunctionComponent<WindowProps> = ({
+  stations,
   isDraggable,
-  dimensions,
-  gridCellSize,
+  viewportDimensions,
+  className,
   onMouseDown,
   onDrag,
   onMouseUp,
-  className,
 }) => {
   const zoomPercentage = useRef(config.DEFAULT_ZOOM_PERCENTAGE);
-  const previousDimensions = useRef<Dimensions>(dimensions);
   const [bounds, setBounds] = useState<WindowBounds>({
-    minX: 0 - dimensions.width / 2,
-    maxX: 0 + dimensions.width / 2,
-    minY: 0 - dimensions.height / 2,
-    maxY: 0 + dimensions.height / 2,
+    minX: 0 - viewportDimensions.width / 2,
+    maxX: 0 + viewportDimensions.width / 2,
+    minY: 0 - viewportDimensions.height / 2,
+    maxY: 0 + viewportDimensions.height / 2,
   });
+  const hasBeenDragged = useRef(false);
 
   const resizeBounds = useCallback(
-    (
-      dimensions: Dimensions,
-      horizontalFactor: number = 0.5,
-      verticalFactor: number = 0.5
-    ) => {
+    (horizontalFactor: number = 0.5, verticalFactor: number = 0.5) => {
       setBounds((previousBounds) => {
         const previousBoundsWidth = previousBounds.maxX - previousBounds.minX;
         const previousBoundsHeight = previousBounds.maxY - previousBounds.minY;
 
         const newBoundsWidth = Math.round(
-          dimensions.width *
+          viewportDimensions.width *
             (config.DEFAULT_ZOOM_PERCENTAGE / zoomPercentage.current)
         );
         const newBoundsHeight = Math.round(
-          dimensions.height *
+          viewportDimensions.height *
             (config.DEFAULT_ZOOM_PERCENTAGE / zoomPercentage.current)
         );
 
@@ -82,48 +71,25 @@ const Window: FunctionComponent<Props> = ({
         };
       });
     },
-    []
+    [viewportDimensions]
   );
 
   useEffect(() => {
-    resizeBounds(dimensions);
-    previousDimensions.current.width = dimensions.width;
-    previousDimensions.current.height = dimensions.height;
-  }, [dimensions, resizeBounds]);
+    resizeBounds();
+  }, [viewportDimensions, resizeBounds]);
 
   const translateMousePosition = (
     callback: CustomClickHandler
   ): MouseEventHandler => {
     return ({ clientX, clientY }) => {
-      const translatedClientX =
-        bounds.minX +
-        (bounds.maxX - bounds.minX) * (clientX / dimensions.width);
-      const translatedClientY =
-        bounds.minY +
-        (bounds.maxY - bounds.minY) * (clientY / dimensions.height);
+      const windowPosition = getWindowPositionFromViewportPosition(
+        { x: clientX, y: clientY },
+        viewportDimensions,
+        bounds
+      );
 
-      callback({ x: translatedClientX, y: translatedClientY });
+      callback(windowPosition);
     };
-  };
-
-  const onWindowDrag: CustomDragEventHandler = (deltaX, deltaY) => {
-    const getScaledValue = (value: number) =>
-      value / (zoomPercentage.current / config.DEFAULT_ZOOM_PERCENTAGE);
-
-    const scaledDeltaX = getScaledValue(deltaX);
-    const scaledDeltaY = getScaledValue(deltaY);
-
-    if (!isDraggable) {
-      onDrag(scaledDeltaX, scaledDeltaY);
-      return;
-    }
-
-    setBounds({
-      minX: bounds.minX - scaledDeltaX,
-      maxX: bounds.maxX - scaledDeltaX,
-      minY: bounds.minY - scaledDeltaY,
-      maxY: bounds.maxY - scaledDeltaY,
-    });
   };
 
   const onZoom: WheelEventHandler = (event) => {
@@ -142,10 +108,10 @@ const Window: FunctionComponent<Props> = ({
       zoomPercentage.current += scaledZoomStepSize;
     } else return;
 
-    const horizontalFactor = event.clientX / previousDimensions.current.width;
-    const verticalFactor = event.clientY / previousDimensions.current.height;
+    const horizontalFactor = event.clientX / viewportDimensions.width;
+    const verticalFactor = event.clientY / viewportDimensions.height;
 
-    resizeBounds(previousDimensions.current, horizontalFactor, verticalFactor);
+    resizeBounds(horizontalFactor, verticalFactor);
   };
 
   const onZoomIn = () => {
@@ -153,7 +119,7 @@ const Window: FunctionComponent<Props> = ({
       return;
     const allowance = config.MAX_ZOOM_PERCENTAGE - zoomPercentage.current;
     zoomPercentage.current += Math.min(allowance, config.ZOOM_BUTTON_STEP_SIZE);
-    resizeBounds(previousDimensions.current);
+    resizeBounds();
   };
 
   const onZoomOut = () => {
@@ -161,18 +127,55 @@ const Window: FunctionComponent<Props> = ({
       return;
     const allowance = zoomPercentage.current - config.MIN_ZOOM_PERCENTAGE;
     zoomPercentage.current -= Math.min(allowance, config.ZOOM_BUTTON_STEP_SIZE);
-    resizeBounds(previousDimensions.current);
+    resizeBounds();
+  };
+
+  const gridLines = getGridLines(bounds, viewportDimensions);
+  const drawableStations = getDrawableStations(
+    stations,
+    viewportDimensions,
+    bounds,
+    zoomPercentage.current
+  );
+
+  const onDragProxy: CustomDragEventHandler = (deltaX, deltaY) => {
+    const getScaledValue = (value: number) =>
+      value / (zoomPercentage.current / config.DEFAULT_ZOOM_PERCENTAGE);
+
+    const scaledDeltaX = getScaledValue(deltaX);
+    const scaledDeltaY = getScaledValue(deltaY);
+
+    if (!isDraggable) {
+      onDrag(scaledDeltaX, scaledDeltaY);
+      return;
+    }
+
+    hasBeenDragged.current = true;
+    setBounds({
+      minX: bounds.minX - scaledDeltaX,
+      maxX: bounds.maxX - scaledDeltaX,
+      minY: bounds.minY - scaledDeltaY,
+      maxY: bounds.maxY - scaledDeltaY,
+    });
+  };
+
+  const onMouseUpProxy: CustomClickHandler = (position) => {
+    if (!hasBeenDragged.current) {
+      onMouseUp(position);
+    } else {
+      hasBeenDragged.current = false;
+    }
   };
 
   return (
     <div className={clsx("Window", className)}>
       <Viewport
-        bounds={bounds}
-        dimensions={dimensions}
-        gridCellSize={gridCellSize}
+        gridLines={gridLines}
+        stations={drawableStations}
+        dimensions={viewportDimensions}
         onMouseDown={translateMousePosition(onMouseDown)}
-        onDrag={onWindowDrag}
-        onMouseUp={translateMousePosition(onMouseUp)}
+        onDrag={onDragProxy}
+        onMouseUp={translateMousePosition(onMouseUpProxy)}
         onWheel={onZoom}
       />
       <ControlPanel className="zoom-control-panel">
