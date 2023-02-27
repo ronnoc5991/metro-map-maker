@@ -20,7 +20,7 @@ import ControlPanel from "../ControlPanel/ControlPanel";
 import Viewport from "../Viewport/Viewport";
 import Button from "../Button/Button";
 import config from "./config/config";
-import "./styles.css";
+import "./styles.scss";
 
 const Window: FunctionComponent<WindowProps> = ({
   stations,

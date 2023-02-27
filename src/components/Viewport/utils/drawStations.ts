@@ -5,9 +5,12 @@ const drawStations = (
   stations: Array<DrawableStation>,
   context: CanvasRenderingContext2D
 ) => {
+  context.save();
+  context.translate(0.5, 0.5);
   stations.forEach((station) => {
     drawCircle(station.position, station.radius, context);
   });
+  context.restore();
 };
 
 const drawCircle = (
@@ -17,14 +20,11 @@ const drawCircle = (
 ) => {
   context.beginPath();
   context.arc(x, y, radius, 0, 2 * Math.PI);
-  context.save();
   context.strokeStyle = "#000000";
   context.lineWidth = 1;
   context.fillStyle = "#FFFFFF";
-  context.translate(0.5, 0.5);
   context.fill();
   context.stroke();
-  context.restore();
 };
 
 export default drawStations;

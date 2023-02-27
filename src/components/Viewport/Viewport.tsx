@@ -4,7 +4,7 @@ import drawGridLines from "./utils/drawGridLines";
 import drawStations from "./utils/drawStations";
 import useMouse from "./hooks/useMouse";
 import { ViewportProps } from "./types";
-import "./styles.css";
+import "./styles.scss";
 
 const Viewport: FunctionComponent<ViewportProps> = ({
   dimensions,

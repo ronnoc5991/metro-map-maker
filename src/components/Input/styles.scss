@@ -1,0 +1,8 @@
+.Input {
+  all: unset;
+  border-radius: var(--border-radius-small);
+
+  &:focus-visible {
+    box-shadow: var(--default-box-shadow);
+  }
+}

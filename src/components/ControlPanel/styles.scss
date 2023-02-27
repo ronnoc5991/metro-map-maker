@@ -1,0 +1,24 @@
+.ControlPanel {
+  all: unset;
+  list-style-type: none;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-white);
+  border-radius: var(--border-radius-medium);
+  box-shadow: var(--default-box-shadow);
+
+  .child:not(:last-of-type) {
+    position: relative;
+  }
+
+  .child:not(:last-of-type)::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 70%;
+    height: 1px;
+    background: #a6a6a6;
+  }
+}

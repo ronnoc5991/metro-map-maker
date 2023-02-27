@@ -1,7 +1,7 @@
 import { Children, FunctionComponent, PropsWithChildren } from "react";
 import clsx from "clsx";
 import { BaseComponentProps } from "../../types/BaseComponentProps";
-import "./styles.css";
+import "./styles.scss";
 
 type Props = BaseComponentProps & {};
 

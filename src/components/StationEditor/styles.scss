@@ -1,0 +1,10 @@
+.StationEditor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .station-name {
+    border: 1px solid black;
+    text-align: center;
+  }
+}
