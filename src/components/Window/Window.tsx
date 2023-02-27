@@ -98,12 +98,12 @@ const Window: FunctionComponent<WindowProps> = ({
       (config.DEFAULT_ZOOM_PERCENTAGE / zoomPercentage.current);
     if (
       event.deltaY > 0 &&
-      zoomPercentage.current > config.MIN_ZOOM_PERCENTAGE
+      isZoomAllowed(-scaledZoomStepSize, zoomPercentage.current)
     ) {
       zoomPercentage.current -= scaledZoomStepSize;
     } else if (
       event.deltaY < 0 &&
-      zoomPercentage.current < config.MAX_ZOOM_PERCENTAGE
+      isZoomAllowed(scaledZoomStepSize, zoomPercentage.current)
     ) {
       zoomPercentage.current += scaledZoomStepSize;
     } else return;
