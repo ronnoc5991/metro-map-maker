@@ -6,20 +6,27 @@ import Button from "../Button/Button";
 import Input from "../Input/Input";
 import "./styles.scss";
 
+// Responsibilites
+// Render and allow for editing of the station name
+// Render a delete button
+// TODO: Display the lines/line segments that this station is on?
+
+// Given just an id, could we get the rest of the stuff from a metroMap context?
+
 type Props = BaseComponentProps & {
   station: Station;
   onDelete: () => void;
   onNameChange: (newName: string) => void;
 };
 
-const StationEditor: FunctionComponent<Props> = ({
+const StationDetails: FunctionComponent<Props> = ({
   station,
   onDelete,
   onNameChange,
   className,
 }) => {
   return (
-    <div className={clsx("StationEditor", className)}>
+    <div className={clsx("StationDetails", className)}>
       <Input
         type="text"
         value={station.name}
@@ -27,10 +34,10 @@ const StationEditor: FunctionComponent<Props> = ({
         className={"station-name"}
       />
       <Button onClick={onDelete} className="delete-button">
-        D
+        Delete
       </Button>
     </div>
   );
 };
 
-export default StationEditor;
+export default StationDetails;
