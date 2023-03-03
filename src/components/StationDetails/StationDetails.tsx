@@ -1,7 +1,9 @@
+import { FunctionComponent, useContext } from "react";
 import clsx from "clsx";
-import { FunctionComponent } from "react";
-import Station from "../../classes/Station";
 import { BaseComponentProps } from "../../types/BaseComponentProps";
+import { DispatchContext } from "../../contexts/dispatchContext";
+import { MapContext } from "../../contexts/mapContext";
+import Station from "../../classes/Station";
 import Button from "../Button/Button";
 import Input from "../Input/Input";
 import "./styles.scss";
@@ -11,31 +13,43 @@ import "./styles.scss";
 // Render a delete button
 // TODO: Display the lines/line segments that this station is on?
 
-// Given just an id, could we get the rest of the stuff from a metroMap context?
-
-type Props = BaseComponentProps & {
-  station: Station;
-  onDelete: () => void;
-  onNameChange: (newName: string) => void;
+export type StationDetailsProps = BaseComponentProps & {
+  id: Station["id"];
 };
 
-const StationDetails: FunctionComponent<Props> = ({
-  station,
-  onDelete,
-  onNameChange,
+const StationDetails: FunctionComponent<StationDetailsProps> = ({
+  id,
   className,
 }) => {
+  const map = useContext(MapContext);
+  const dispatch = useContext(DispatchContext);
+
+  const station = map.stations.find((station) => station.id === id);
+
   return (
     <div className={clsx("StationDetails", className)}>
-      <Input
-        type="text"
-        value={station.name}
-        onChange={onNameChange}
-        className={"station-name"}
-      />
-      <Button onClick={onDelete} className="delete-button">
-        Delete
-      </Button>
+      {station && (
+        <>
+          <Input
+            type="text"
+            value={station.name}
+            className={"station-name"}
+            onChange={(newName) =>
+              dispatch({
+                type: "update-station-name",
+                id: station.id,
+                newName,
+              })
+            }
+          />
+          <Button
+            className="delete-button"
+            onClick={() => dispatch({ type: "delete-station", id: station.id })}
+          >
+            Delete
+          </Button>
+        </>
+      )}
     </div>
   );
 };

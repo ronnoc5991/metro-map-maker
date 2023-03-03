@@ -1,54 +1,80 @@
-import { FunctionComponent } from "react";
+import { FunctionComponent, useContext } from "react";
 import clsx from "clsx";
 import { BaseComponentProps } from "../../types/BaseComponentProps";
-import LineSegment from "../../classes/LineSegment";
+import { MapContext } from "../../contexts/mapContext";
+import { DispatchContext } from "../../contexts/dispatchContext";
 import Line from "../../classes/Line";
 import Button from "../Button/Button";
 import Input from "../Input/Input";
 
 // Responsibilites
 // Render and allow for editing of the line name
-// render each preexisting child segment in a button that pulls up their details
-// render a button that allows for creating a new child segment
+// Render each preexisting child segment in a button that pulls up their details
+// Render a button that allows for creating a new child segment
 // Render a delete button
 
-// Given just an id, could we get the rest of the stuff from a metroMap context?
-
-type Props = BaseComponentProps & {
-  line: Line;
-  onNameChange: (newName: string) => void;
-  onChildSegmentClick: (childSegmentId: LineSegment["id"]) => void;
-  onNewSegmentClick: () => void; // will we need the parent line id?
-  onDelete: () => void;
+export type LineDetailsProps = BaseComponentProps & {
+  id: Line["id"];
 };
 
-const LineDetails: FunctionComponent<Props> = ({
-  line,
-  onNameChange,
-  onChildSegmentClick,
-  onNewSegmentClick,
-  onDelete,
+const LineDetails: FunctionComponent<LineDetailsProps> = ({
+  id,
   className,
 }) => {
+  const map = useContext(MapContext);
+  const dispatch = useContext(DispatchContext);
+
+  const line = map.lines.find((line) => line.id === id);
+
   return (
     <div className={clsx(className)}>
-      <Input type="text" value={line.name} onChange={onNameChange} />
-      <h1>Segments</h1>
-      <ul>
-        {line.segmentIds.map((childSegmentId) => {
-          return (
-            <li key={childSegmentId}>
-              <Button onClick={() => onChildSegmentClick(childSegmentId)}>
-                {childSegmentId}
+      {line && (
+        <>
+          <Input
+            type="text"
+            value={line.name}
+            onChange={(newName) =>
+              dispatch({ type: "update-line-name", id: line.id, newName })
+            }
+          />
+          <h1>Segments</h1>
+          <ul>
+            {line.segmentIds.map((childSegmentId) => {
+              return (
+                <li key={childSegmentId}>
+                  <Button
+                    onClick={() =>
+                      dispatch({
+                        type: "select-line-segment",
+                        id: childSegmentId,
+                      })
+                    }
+                  >
+                    {childSegmentId}
+                  </Button>
+                </li>
+              );
+            })}
+            <li>
+              <Button
+                onClick={() =>
+                  dispatch({
+                    type: "enter-line-segment-creation-mode",
+                    parentLineId: id,
+                  })
+                }
+              >
+                New Segment
               </Button>
             </li>
-          );
-        })}
-        <li>
-          <Button onClick={onNewSegmentClick}>New Segment</Button>
-        </li>
-      </ul>
-      <Button onClick={onDelete}>Delete</Button>
+          </ul>
+          <Button
+            onClick={() => dispatch({ type: "delete-line", id: line.id })}
+          >
+            Delete
+          </Button>
+        </>
+      )}
     </div>
   );
 };

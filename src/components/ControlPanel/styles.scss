@@ -7,6 +7,19 @@
   border-radius: var(--border-radius-medium);
   box-shadow: var(--default-box-shadow);
 
+  .child {
+    display: flex;
+    justify-content: stretch;
+    align-items: stretch;
+    width: 30px;
+    height: 30px;
+
+    & > * {
+      flex-grow: 1;
+      text-align: center;
+    }
+  }
+
   .child:not(:last-of-type) {
     position: relative;
   }

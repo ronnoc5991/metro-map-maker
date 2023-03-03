@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 type Stack<Frame> = {
+  size: number;
   topFrame: Frame | undefined;
   push: (frame: Frame) => void;
   pop: () => void;
@@ -24,7 +25,7 @@ const useStack = <Frame>(): Stack<Frame> => {
 
   const topFrame = stack.length > 0 ? stack[stack.length - 1] : undefined;
 
-  return { topFrame, push, pop, clear };
+  return { size: stack.length, topFrame, push, pop, clear };
 };
 
 export default useStack;

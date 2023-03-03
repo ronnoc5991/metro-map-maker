@@ -1,1 +1,3 @@
-export type BaseComponentProps = { className?: string | Array<string> };
+export type BaseComponentProps = {
+  className?: string | Array<string>;
+};
