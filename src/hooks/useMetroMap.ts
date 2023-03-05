@@ -78,6 +78,11 @@ const useMetroMap = (): MetroMap & {
     stationIds: [Station["id"], Station["id"]],
     parentLineId: Line["id"]
   ): LineSegment["id"] => {
+    const involvedStations = [
+      stations.find((station) => station.id === stationIds[0]),
+      stations.find((station) => station.id === stationIds[1]),
+    ] as [Station, Station];
+
     const preexistingLineSegment = lineSegments.find(
       (lineSegment) =>
         lineSegment.stationIds.includes(stationIds[0]) &&
@@ -91,16 +96,10 @@ const useMetroMap = (): MetroMap & {
       return preexistingLineSegment.id;
     }
 
-    // TODO: should probably check for the parent's existence before creating this?
-
     const newLineSegment = new LineSegment(
-      stationIds,
+      involvedStations,
       lineSegmentId.current++,
       parentLineId
-    );
-    // for each station involved here
-    const involvedStations = stations.filter(
-      (station) => station.id === stationIds[0] || station.id === stationIds[1]
     );
 
     involvedStations.forEach((station) =>
@@ -165,7 +164,7 @@ const useMetroMap = (): MetroMap & {
 
   const updateStationName = (stationId: Station["id"], newName: string) => {
     const newStations = [...stations];
-    const stationIndex = stations.findIndex(
+    const stationIndex = newStations.findIndex(
       (station) => station.id === stationId
     );
 

@@ -2,13 +2,13 @@ import { Dimensions } from "../../../types/Dimensions";
 import { Position } from "../../../types/Position";
 import { WindowBounds } from "../../../types/WindowBounds";
 
-type UnitTranslator = (
+type Translator = (
   value: number,
   viewportDimensions: Dimensions,
   windowBounds: WindowBounds
 ) => number;
 
-export const getViewportXFromWindowX: UnitTranslator = (
+export const getViewportXFromWindowX: Translator = (
   windowX,
   viewportDimensions,
   windowBounds
@@ -19,7 +19,7 @@ export const getViewportXFromWindowX: UnitTranslator = (
   );
 };
 
-export const getViewportYFromWindowY: UnitTranslator = (
+export const getViewportYFromWindowY: Translator = (
   windowY,
   viewportDimensions,
   windowBounds

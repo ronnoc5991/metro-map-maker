@@ -15,7 +15,7 @@ const useMouse = (
 } => {
   const isDown = useRef(false);
   const isDragging = useRef(false);
-  const previousPosition = useRef<Position>({ x: 0, y: 0 }); // in 'viewport units' (real pixels)
+  const previousPosition = useRef<Position>({ x: 0, y: 0 });
 
   const onDown: MouseEventHandler = (event) => {
     isDown.current = true;

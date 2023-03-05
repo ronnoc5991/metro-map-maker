@@ -1,6 +1,6 @@
 import { FunctionComponent, useRef, useState } from "react";
 import { CustomDragEventHandler } from "../types/CustomDragEventHandler";
-import { CustomClickHandler } from "../types/CustomClickHandler";
+import { CustomClickEventHandler } from "../types/CustomClickEventHandler";
 import { SidePanelContent } from "./types";
 import { DispatchContext, DispatchPayload } from "../contexts/dispatchContext";
 import { MapContext } from "../contexts/mapContext";
@@ -186,7 +186,7 @@ const App: FunctionComponent = () => {
     }
   };
 
-  const onMouseDown: CustomClickHandler = () => {
+  const onMouseDown: CustomClickEventHandler = () => {
     if (clickSignificance === "exploration") return;
     // when we are in segment editing mode, a mouse down on a control point will tell us what we are dragging
   };
@@ -195,7 +195,7 @@ const App: FunctionComponent = () => {
     // control point drag, update active control point position
   };
 
-  const onMouseUp: CustomClickHandler = (position) => {
+  const onMouseUp: CustomClickEventHandler = (position) => {
     const clickedStation = getClickedStation(position, stations);
 
     if (clickSignificance === "exploration") {
@@ -243,7 +243,6 @@ const App: FunctionComponent = () => {
           <DispatchContext.Provider value={dispatch}>
             <Window
               className="window"
-              stations={stations}
               isDraggable={isWindowDraggable}
               viewportDimensions={viewportDimensions}
               onMouseDown={onMouseDown}

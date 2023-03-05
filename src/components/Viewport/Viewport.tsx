@@ -1,15 +1,40 @@
-import { FunctionComponent, useEffect, useRef } from "react";
+import {
+  FunctionComponent,
+  useEffect,
+  useRef,
+  MouseEventHandler,
+  WheelEventHandler,
+} from "react";
 import clsx from "clsx";
+import { BaseComponentProps } from "../../types/BaseComponentProps";
+import { CustomDragEventHandler } from "../../types/CustomDragEventHandler";
+import { Dimensions } from "../../types/Dimensions";
+import { StraightLine } from "../../types/StraightLine";
+import { DrawableStation } from "./utils/drawStations";
 import drawGridLines from "./utils/drawGridLines";
 import drawStations from "./utils/drawStations";
 import useMouse from "./hooks/useMouse";
-import { ViewportProps } from "./types";
-import "./styles.scss";
+import drawLineSegments from "./utils/drawLineSegments";
+import { BezierCurve } from "../../types/BezierCurve";
+
+type ViewportProps = BaseComponentProps & {
+  dimensions: Dimensions;
+  gridLines: Array<StraightLine>;
+  stations: Array<DrawableStation>;
+  lineSegments: Array<BezierCurve>;
+  onMouseDown: MouseEventHandler;
+  onMouseUp: MouseEventHandler;
+  onDrag: CustomDragEventHandler;
+  onWheel: WheelEventHandler;
+};
+
+// TODO: think about displaying station names above them? Maybe only on hover?
 
 const Viewport: FunctionComponent<ViewportProps> = ({
   dimensions,
   gridLines,
   stations,
+  lineSegments,
   className,
   onMouseDown,
   onDrag,
@@ -30,13 +55,14 @@ const Viewport: FunctionComponent<ViewportProps> = ({
     if (!context.current) return;
     context.current.clearRect(0, 0, dimensions.width, dimensions.height);
     drawGridLines(gridLines, context.current);
+    drawLineSegments(lineSegments, context.current);
     drawStations(stations, context.current);
   });
 
   return (
     <canvas
       ref={canvasRef}
-      className={clsx("Viewport", className)}
+      className={clsx(className)}
       width={dimensions.width}
       height={dimensions.height}
       onMouseDown={onDown}

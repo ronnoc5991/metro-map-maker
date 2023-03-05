@@ -1,5 +1,9 @@
+import Station from "../../../classes/Station";
 import { Position } from "../../../types/Position";
-import { DrawableStation } from "../types";
+
+export type DrawableStation = Station & {
+  radius: number;
+};
 
 const drawStations = (
   stations: Array<DrawableStation>,

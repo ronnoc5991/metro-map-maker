@@ -1,32 +1,14 @@
 import Station from "../../../classes/Station";
-import { Dimensions } from "../../../types/Dimensions";
 import { Position } from "../../../types/Position";
 import { WindowBounds } from "../../../types/WindowBounds";
-import { DrawableStation } from "../../Viewport/types";
-import config from "../config/config";
-import { getViewportPositionFromWindowPosition } from "./unitTranslation";
 
-const getDrawableStations = (
+const getVisibleStations = (
   stations: Array<Station>,
-  viewportDimensions: Dimensions,
-  bounds: WindowBounds,
-  zoomPercentage: number
-): Array<DrawableStation> =>
-  stations
-    .filter((station) => {
-      return isStationVisible(station.position, Station.radius, bounds);
-    })
-    .map((station) => {
-      return {
-        position: getViewportPositionFromWindowPosition(
-          station.position,
-          viewportDimensions,
-          bounds
-        ),
-        radius:
-          zoomPercentage * (Station.radius / config.DEFAULT_ZOOM_PERCENTAGE),
-      };
-    });
+  bounds: WindowBounds
+): Array<Station> =>
+  stations.filter((station) => {
+    return isStationVisible(station.position, Station.radius, bounds);
+  });
 
 function isStationVisible(
   { x, y }: Position,
@@ -53,4 +35,4 @@ function isStationVisible(
   return false;
 }
 
-export default getDrawableStations;
+export default getVisibleStations;
