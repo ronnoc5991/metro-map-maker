@@ -1,0 +1,27 @@
+.heading {
+  margin: unset;
+
+  &.small {
+    font-size: var(--font-size-small);
+  }
+
+  &.medium {
+    font-size: var(--font-size-medium);
+  }
+
+  &.large {
+    font-size: var(--font-size-large);
+  }
+
+  &.x-large {
+    font-size: var(--font-size-x-large);
+  }
+
+  &.thin {
+    font-weight: 300;
+  }
+
+  &.italic {
+    font-style: italic;
+  }
+}

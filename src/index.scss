@@ -5,15 +5,21 @@
 :root {
   --border-radius-small: 4px;
   --border-radius-medium: 8px;
+
   --default-box-shadow: 0 1px 4px rgb(0 0 0 / 30%);
 
   --color-white: #ffffff;
   --color-off-white: #f7f7f7;
+
+  --font-size-small: 14px;
+  --font-size-medium: 18px;
+  --font-size-large: 24px;
+  --font-size-x-large: 32px;
 }
 
 body {
   margin: 0;
-  min-height: 100vh;
   position: relative;
   overflow: hidden;
+  font-family: "Ubuntu", sans-serif;
 }
