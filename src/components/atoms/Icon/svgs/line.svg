@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewbox="0 0 100 100" fill="none">
+  <path stroke="#000" stroke-dasharray="4 4" stroke-linecap="round" d="m41.707 7.993 50.286 49.3M8.5 41.293 41.793 8"/>
+  <circle cx="8.25" cy="41.75" r="7.75" fill="#fff" stroke="#000"/>
+  <circle cx="41.75" cy="8.25" r="7.75" fill="#fff" stroke="#000"/>
+  <path stroke="#000" stroke-dasharray="4 4" stroke-linecap="round" d="M58.5 91.293 91.793 58"/>
+  <circle cx="58.25" cy="91.75" r="7.75" fill="#fff" stroke="#000"/>
+  <circle cx="91.75" cy="58.25" r="7.75" fill="#fff" stroke="#000"/>
+  <circle cx="67.25" cy="33.25" r="7.75" fill="#fff" stroke="#000"/>
+</svg>
