@@ -1,0 +1,16 @@
+.Button {
+  background: unset;
+  font-family: unset;
+  outline: unset;
+  border: unset;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  height: 30px;
+  padding: 3px;
+  gap: 24px;
+
+  .label {
+    white-space: nowrap;
+  }
+}

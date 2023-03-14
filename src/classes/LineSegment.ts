@@ -1,8 +1,11 @@
 import Station from "./Station";
 import Line from "./Line";
 import { Position } from "../types/Position";
+import { sizes } from "../config";
 
 export default class LineSegment {
+  static width = sizes.lineSegmentWidth;
+
   public parentLineIds: Array<Line["id"]> = [];
   public stationIds: [Station["id"], Station["id"]];
   public controlPointOne: Position;

@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-type Stack<Frame> = {
+export type Stack<Frame> = {
   size: number;
   topFrame: Frame | undefined;
   push: (frame: Frame) => void;

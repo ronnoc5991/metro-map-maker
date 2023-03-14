@@ -20,7 +20,7 @@ import { DrawableStation } from "../Viewport/utils/drawStations";
 import { BaseComponentProps } from "../../types/BaseComponentProps";
 import LineSegment from "../../classes/LineSegment";
 import { BezierCurve } from "../../types/BezierCurve";
-import { MapContext } from "../../contexts/mapContext";
+import { WorldMapContext } from "../providers/WorldMapProvider/WorldMapProvider";
 
 // Responsibility
 // Transform coordinates from above to viewport coordinates
@@ -50,7 +50,7 @@ const WindowViewportInterpreter: FunctionComponent<Props> = ({
   visibleLineSegments,
   className,
 }) => {
-  const { stations } = useContext(MapContext);
+  const { stations } = useContext(WorldMapContext);
 
   const getTranslatedClickEventHandler = (
     callback: CustomClickEventHandler
@@ -119,6 +119,9 @@ const WindowViewportInterpreter: FunctionComponent<Props> = ({
       // TODO: fix these lazy !s
 
       return {
+        width:
+          LineSegment.width *
+          (viewportDimensions.width / (windowBounds.maxX - windowBounds.minX)),
         start: getViewportPositionFromWindowPosition(
           stationOne.position,
           viewportDimensions,

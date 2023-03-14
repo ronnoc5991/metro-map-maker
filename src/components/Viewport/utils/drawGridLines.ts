@@ -6,6 +6,7 @@ const drawGridLines = (
 ): void => {
   context.save();
   context.translate(0.5, 0.5); // hack to get crisper lines
+  context.strokeStyle = "#aaaaaa";
   gridLines.forEach(({ from, to }) => {
     context.beginPath();
     context.moveTo(from.x, from.y);

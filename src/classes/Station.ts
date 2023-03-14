@@ -9,6 +9,6 @@ export default class Station {
   public connectedLineSegmentIds: Array<LineSegment["id"]> = [];
 
   constructor(public position: Position, public id: number) {
-    this.name = `Station ${id}`;
+    this.name = `New Station - ${id}`;
   }
 }

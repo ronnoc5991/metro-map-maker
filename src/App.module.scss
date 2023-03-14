@@ -1,0 +1,18 @@
+.app {
+  height: 100vh;
+  position: relative;
+
+  .control-panel {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 400px;
+  }
+
+  .control-panel-controls {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+  }
+}

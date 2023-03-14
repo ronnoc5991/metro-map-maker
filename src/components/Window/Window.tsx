@@ -13,21 +13,15 @@ import { CustomDragEventHandler } from "../../types/CustomDragEventHandler";
 import { BaseComponentProps } from "../../types/BaseComponentProps";
 import { WindowBounds } from "../../types/WindowBounds";
 import { Dimensions } from "../../types/Dimensions";
-import { MapContext } from "../../contexts/mapContext";
 import getVisibileLineSegments from "./utils/getVisibleLineSegments";
 import getVisibleGridLines from "./utils/getVisibleGridLines";
 import getVisibleStations from "./utils/getVisibleStations";
 import isZoomAllowed from "./utils/isZoomAllowed";
 import WindowViewportInterpreter from "../WindowViewportInterpreter/WindowViewportInterpreter";
-import ControlPanel from "../ControlPanel/ControlPanel";
-import Button from "../Button/Button";
+import { WorldMapContext } from "../providers/WorldMapProvider/WorldMapProvider";
+import ButtonList from "../organisms/ButtonList/ButtonList";
 import config from "./config/config";
 import "./styles.scss";
-
-// Responsibility:
-// Limit what we see of the Map
-// React to zoom
-// React to drag
 
 type WindowProps = BaseComponentProps & {
   isDraggable: boolean;
@@ -53,7 +47,7 @@ const Window: FunctionComponent<WindowProps> = ({
     maxY: 0 + viewportDimensions.height / 2,
   });
   const hasBeenDragged = useRef(false);
-  const { stations, lineSegments } = useContext(MapContext);
+  const { stations, lineSegments } = useContext(WorldMapContext);
 
   const resizeBounds = useCallback(
     (horizontalFactor: number = 0.5, verticalFactor: number = 0.5) => {
@@ -172,10 +166,13 @@ const Window: FunctionComponent<WindowProps> = ({
           bounds
         )}
       />
-      <ControlPanel className="zoom-control-panel">
-        <Button onClick={onZoomIn}>+</Button>
-        <Button onClick={onZoomOut}>-</Button>
-      </ControlPanel>
+      <ButtonList
+        className="zoom-buttons"
+        buttonProps={[
+          { icon: "plus", onClick: onZoomIn },
+          { icon: "minus", onClick: onZoomOut },
+        ]}
+      />
     </div>
   );
 };

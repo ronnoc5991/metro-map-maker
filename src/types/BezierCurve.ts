@@ -5,4 +5,5 @@ export type BezierCurve = {
   controlPointOne: Position;
   controlPointTwo: Position;
   end: Position;
+  width: number;
 };

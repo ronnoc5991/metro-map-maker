@@ -1,6 +1,8 @@
-.Input {
+.input {
   all: unset;
   border-radius: var(--border-radius-small);
+  text-align: center;
+  width: 100%;
 
   &:focus-visible {
     box-shadow: var(--default-box-shadow);

@@ -20,7 +20,7 @@ const Input: FunctionComponent<Props> = ({
       type={type}
       value={value}
       onChange={(event) => onChange(event.target.value)}
-      className={clsx("Input", className)}
+      className={clsx("input", className)}
     />
   );
 };
