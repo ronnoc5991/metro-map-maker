@@ -3,7 +3,7 @@ import clsx from "clsx";
 import { BaseComponentProps } from "../../../types/BaseComponentProps";
 import Icon, { IconProps } from "../../atoms/Icon/Icon";
 import Text from "../../atoms/Text/Text";
-import "./styles.scss";
+import styles from "./styles.module.scss";
 
 export type ButtonProps = BaseComponentProps & {
   icon?: IconProps["name"];
@@ -23,11 +23,11 @@ const Button: FunctionComponent<ButtonProps> = ({
     <button
       onClick={onClick}
       title={title}
-      className={clsx("Button", className)}
+      className={clsx(styles.button, className)}
     >
-      {icon && <Icon name={icon} className="icon" />}
+      {icon && <Icon name={icon} className={styles.icon} />}
       {label && (
-        <Text as="span" className="label">
+        <Text as="span" className={styles.label}>
           {label}
         </Text>
       )}

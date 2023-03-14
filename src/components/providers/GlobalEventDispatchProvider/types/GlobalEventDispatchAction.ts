@@ -1,7 +1,7 @@
 import Line from "../../../../classes/Line";
 import Station from "../../../../classes/Station";
 import { Position } from "../../../../types/Position";
-import { ActiveTupleIndex } from "../../LineSegmentCreationProvider/types";
+import { ActiveTupleIndex } from "../../SelectedStationsProvider/types";
 import { ControlPanelStackAction } from "../../ControlPanelStackProvider/types";
 import { WorldMapCommonAction } from "../../WorldMapProvider/types";
 
@@ -28,13 +28,16 @@ export type GlobalEventDispatchAction =
       parentLineId: Line["id"];
     }
   | {
-      type: "set-line-segment-creator-active-index";
+      type: "set-selected-stations-active-index";
       index: ActiveTupleIndex;
     }
   | {
-      type: "select-line-segment-station";
+      type: "select-station";
       station: Station;
     }
   | {
       type: "close-control-panel";
+    }
+  | {
+      type: "enter-route-planning-mode";
     };

@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction } from "react";
 import { WorldMapDispatch } from "../../WorldMapProvider/types";
 import { GlobalEventDispatchAction } from "../types/GlobalEventDispatchAction";
 import { MouseMode } from "../../MouseModeProvider/MouseModeProvider";
-import { LineSegmentCreationAction } from "../../LineSegmentCreationProvider/types";
+import { SelectedStationsAction } from "../../SelectedStationsProvider/types";
 import { ControlPanelStackDispatch } from "../../ControlPanelStackProvider/types";
 
 export type GlobalEventDispatch = (action: GlobalEventDispatchAction) => void;
@@ -11,14 +11,14 @@ type GlobalEventDispatchGetter = (
   worldMapDispatch: WorldMapDispatch,
   controlPanelStackDispatch: ControlPanelStackDispatch,
   mouseModeDispatch: Dispatch<SetStateAction<MouseMode>>,
-  lineSegmentCreationDispatch: Dispatch<LineSegmentCreationAction>
+  selectedStationsDispatch: Dispatch<SelectedStationsAction>
 ) => GlobalEventDispatch;
 
 export const getGlobalEventDispatch: GlobalEventDispatchGetter = (
   worldMapDispatch,
   controlPanelStackDispatch,
   mouseModeDispatch,
-  lineSegmentCreationDispatch
+  selectedStationsDispatch
 ) => {
   return (action: GlobalEventDispatchAction) => {
     {
@@ -44,8 +44,8 @@ export const getGlobalEventDispatch: GlobalEventDispatchGetter = (
           controlPanelStackDispatch({ type: "pop-frame-off-stack" });
           break;
         }
-        case "select-line-segment-station": {
-          lineSegmentCreationDispatch({
+        case "select-station": {
+          selectedStationsDispatch({
             type: "select-station",
             station: action.station,
           });
@@ -56,7 +56,7 @@ export const getGlobalEventDispatch: GlobalEventDispatchGetter = (
           break;
         }
         case "enter-line-segment-creation-mode": {
-          mouseModeDispatch("line-segment-creation");
+          mouseModeDispatch("station-selection");
           controlPanelStackDispatch({
             type: "open-line-segment-creator",
             id: action.parentLineId,
@@ -90,12 +90,12 @@ export const getGlobalEventDispatch: GlobalEventDispatchGetter = (
             type: "open-line-segment-details",
             id: lineSegmentId,
           });
-          lineSegmentCreationDispatch({ type: "reset" });
+          selectedStationsDispatch({ type: "reset" });
           mouseModeDispatch("exploration");
           break;
         }
-        case "set-line-segment-creator-active-index": {
-          lineSegmentCreationDispatch({
+        case "set-selected-stations-active-index": {
+          selectedStationsDispatch({
             type: "set-active-index",
             index: action.index,
           });
@@ -105,6 +105,14 @@ export const getGlobalEventDispatch: GlobalEventDispatchGetter = (
           controlPanelStackDispatch({ type: "clear" });
           mouseModeDispatch("exploration");
           break;
+        }
+        case "enter-route-planning-mode": {
+          mouseModeDispatch("station-selection");
+          controlPanelStackDispatch({ type: "open-route-planner" });
+
+          // when we have two stations selected, we can calculate a route
+          // display the route in the same frame
+          // or just keep that state in the route planner component? THIS
         }
       }
     }

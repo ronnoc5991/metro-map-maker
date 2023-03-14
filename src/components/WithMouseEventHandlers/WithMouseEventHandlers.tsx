@@ -44,10 +44,10 @@ const WithMouseEventHandlers = <T,>({ Component, props }: Props<T>) => {
     } else if (mouseMode === "station-creation") {
       if (clickedStation) return;
       globalEventDispatch({ type: "create-new-station", position });
-    } else if (mouseMode === "line-segment-creation") {
+    } else if (mouseMode === "station-selection") {
       if (!clickedStation) return;
       globalEventDispatch({
-        type: "select-line-segment-station",
+        type: "select-station",
         station: clickedStation,
       });
     }

@@ -12,6 +12,7 @@ import {
   LinesList,
   StationsList,
 } from "../../organisms/ControlPanel/frames/ItemList/ItemList";
+import RoutePlanner from "../../organisms/ControlPanel/frames/RoutePlanner/RoutePlanner";
 
 const ControlPanelStackProvider: FunctionComponent<PropsWithChildren> = ({
   children,
@@ -52,6 +53,13 @@ const ControlPanelStackProvider: FunctionComponent<PropsWithChildren> = ({
         push({
           component: LineSegmentCreator,
           props: { parentLineId: action.id },
+        });
+        break;
+      }
+      case "open-route-planner": {
+        push({
+          component: RoutePlanner,
+          props: {},
         });
         break;
       }

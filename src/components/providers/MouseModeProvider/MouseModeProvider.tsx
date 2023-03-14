@@ -5,7 +5,7 @@ import { MouseModeContext } from "./contexts/MouseModeContext";
 export type MouseMode =
   | "exploration"
   | "station-creation"
-  | "line-segment-creation";
+  | "station-selection";
 
 const MouseModeProvider: FunctionComponent<PropsWithChildren> = ({
   children,

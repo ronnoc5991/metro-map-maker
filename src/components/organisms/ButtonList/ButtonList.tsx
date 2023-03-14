@@ -2,7 +2,7 @@ import { FunctionComponent } from "react";
 import clsx from "clsx";
 import { BaseComponentProps } from "../../../types/BaseComponentProps";
 import Button, { ButtonProps } from "../../molecules/Button/Button";
-import "./styles.scss";
+import styles from "./styles.module.scss";
 
 type Props = BaseComponentProps & {
   buttonProps: Array<ButtonProps>;
@@ -10,7 +10,7 @@ type Props = BaseComponentProps & {
 
 const ButtonList: FunctionComponent<Props> = ({ buttonProps, className }) => {
   return (
-    <ul className={clsx("button-list", className)}>
+    <ul className={clsx(styles["button-list"], className)}>
       {buttonProps.map((props, index) => {
         return (
           <li key={index} className="child">

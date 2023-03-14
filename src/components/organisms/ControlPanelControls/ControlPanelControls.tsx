@@ -22,6 +22,12 @@ const ControlPanelControls: FunctionComponent<Props> = ({ className }) => {
           title: "Open Lines List",
           onClick: () => globalEventDispatch({ type: "open-lines-list" }),
         },
+        {
+          icon: "line-segment",
+          title: "Plan a route",
+          onClick: () =>
+            globalEventDispatch({ type: "enter-route-planning-mode" }),
+        },
       ]}
     />
   );

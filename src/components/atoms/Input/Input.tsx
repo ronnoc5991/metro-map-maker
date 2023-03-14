@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import { FunctionComponent, HTMLInputTypeAttribute } from "react";
 import { BaseComponentProps } from "../../../types/BaseComponentProps";
-import "./styles.scss";
+import styles from "./styles.module.scss";
 
 type Props = BaseComponentProps & {
   type: HTMLInputTypeAttribute;
@@ -20,7 +20,7 @@ const Input: FunctionComponent<Props> = ({
       type={type}
       value={value}
       onChange={(event) => onChange(event.target.value)}
-      className={clsx("input", className)}
+      className={clsx(styles.input, className)}
     />
   );
 };

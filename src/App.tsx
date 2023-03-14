@@ -1,6 +1,6 @@
 import { FunctionComponent, useRef } from "react";
 import GlobalEventDispatchProvider from "./components/providers/GlobalEventDispatchProvider/GlobalEventDispatchProvider";
-import LineSegmentCreationProvider from "./components/providers/LineSegmentCreationProvider/LineSegmentCreationProvider";
+import LineSegmentCreationProvider from "./components/providers/SelectedStationsProvider/SelectedStationsProvider";
 import ControlPanelStackProvider from "./components/providers/ControlPanelStackProvider/ControlPanelStackProvider";
 import WithMouseEventHandlers from "./components/WithMouseEventHandlers/WithMouseEventHandlers";
 import MouseModeProvider from "./components/providers/MouseModeProvider/MouseModeProvider";
@@ -17,6 +17,13 @@ const App: FunctionComponent = () => {
 
   // window should ALMOST always be draggable, unless we are dragging an edge control point for example
   const isWindowDraggable = true;
+
+  // we need to push a frame onto the stack
+  // we need to start recording the stationst that are clicked
+  // when we have two stations selected, we can calculate a route
+  // display the route in the same frame
+  // should we have a calculated route context?
+  // or just keep that state in the route planner component? THIS
 
   return (
     <div className={styles.app} ref={container}>

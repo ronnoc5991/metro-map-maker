@@ -4,7 +4,6 @@ import {
   PropsWithChildren,
   useContext,
 } from "react";
-import { LineSegmentCreationDispatchContext } from "../LineSegmentCreationProvider/contexts/LineSegmentCreationDispatchContext";
 import { MouseModeDispatchContext } from "../MouseModeProvider/contexts/MouseModeDispatchContext";
 import { ControlPanelStackDispatchContext } from "../ControlPanelStackProvider/contexts/ControlPanelStackDispatchContext";
 import { WorldMapDispatchContext } from "../WorldMapProvider/WorldMapProvider";
@@ -12,6 +11,7 @@ import {
   getGlobalEventDispatch,
   GlobalEventDispatch,
 } from "./utils/getGlobalEventDispatch";
+import { SelectedStationsDispatchContext } from "../SelectedStationsProvider/SelectedStationsProvider";
 
 export const GlobalEventDispatchContext = createContext<GlobalEventDispatch>(
   () => undefined
@@ -25,15 +25,13 @@ const GlobalEventDispatchProvider: FunctionComponent<PropsWithChildren> = ({
     ControlPanelStackDispatchContext
   );
   const mouseModeDispatch = useContext(MouseModeDispatchContext);
-  const lineSegmentCreationDispatch = useContext(
-    LineSegmentCreationDispatchContext
-  );
+  const selectedStationsDispatch = useContext(SelectedStationsDispatchContext);
 
   const globalEventDispatch = getGlobalEventDispatch(
     worldMapDispatch,
     controlPanelStackDispatch,
     mouseModeDispatch,
-    lineSegmentCreationDispatch
+    selectedStationsDispatch
   );
 
   return (

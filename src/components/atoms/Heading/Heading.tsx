@@ -2,11 +2,10 @@ import clsx from "clsx";
 import { FunctionComponent, PropsWithChildren } from "react";
 import { BaseComponentProps } from "../../../types/BaseComponentProps";
 import { FontSize } from "../../../types/FontSize";
-import { HeadingAs } from "./types";
-import "./styles.scss";
+import styles from "./styles.module.scss";
 
 type Props = BaseComponentProps & {
-  as: HeadingAs;
+  as: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
   size?: FontSize;
   thin?: boolean;
   italic?: boolean;
@@ -23,7 +22,7 @@ const Heading: FunctionComponent<PropsWithChildren<Props>> = ({
   const Tag = as;
   return (
     <Tag
-      className={clsx("heading", size, className, {
+      className={clsx(styles.heading, styles[`${size}`], className, {
         thin: thin,
         italic: italic,
       })}

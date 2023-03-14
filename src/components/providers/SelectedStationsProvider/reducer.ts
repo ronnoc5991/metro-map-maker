@@ -1,12 +1,12 @@
 import { Reducer } from "react";
 import { defaultState } from "./config";
 import {
-  LineSegmentCreationAction,
-  LineSegmentCreationState,
+  SelectedStationsAction,
+  SelectedStationsState,
   StationIdTuple,
 } from "./types";
 
-const reducer: Reducer<LineSegmentCreationState, LineSegmentCreationAction> = (
+const reducer: Reducer<SelectedStationsState, SelectedStationsAction> = (
   currentState,
   action
 ) => {

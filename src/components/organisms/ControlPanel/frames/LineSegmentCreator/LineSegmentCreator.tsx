@@ -1,13 +1,11 @@
 import { FunctionComponent, useContext } from "react";
 import clsx from "clsx";
-import { BaseComponentProps } from "../../../../../types/BaseComponentProps";
-import Station from "../../../../../classes/Station";
-import Button from "../../../../molecules/Button/Button";
 import Line from "../../../../../classes/Line";
-import { WorldMapContext } from "../../../../providers/WorldMapProvider/WorldMapProvider";
+import { BaseComponentProps } from "../../../../../types/BaseComponentProps";
 import { GlobalEventDispatchContext } from "../../../../providers/GlobalEventDispatchProvider/GlobalEventDispatchProvider";
-import { stationIdTuplelIndices } from "../../../../providers/LineSegmentCreationProvider/types";
-import { LineSegmentCreationContext } from "../../../../providers/LineSegmentCreationProvider/contexts/LineSegmentCreationContext";
+import { SelectedStationsContext } from "../../../../providers/SelectedStationsProvider/SelectedStationsProvider";
+import StationSelector from "../../../../molecules/StationSelector/StationSelector";
+import Button from "../../../../molecules/Button/Button";
 
 export type LineSegmentCreatorProps = BaseComponentProps & {
   parentLineId: Line["id"];
@@ -17,14 +15,8 @@ const LineSegmentCreator: FunctionComponent<LineSegmentCreatorProps> = ({
   parentLineId,
   className,
 }) => {
-  const { activeIndex, selectedStationIds } = useContext(
-    LineSegmentCreationContext
-  );
-  const { stations } = useContext(WorldMapContext);
+  const { selectedStationIds } = useContext(SelectedStationsContext);
   const globalEventDispatch = useContext(GlobalEventDispatchContext);
-
-  const findStation = (stationId: Station["id"] | null) =>
-    stations.find((station) => station.id === stationId);
 
   const canCreateLineSegment = selectedStationIds.every(
     (value) => value !== null
@@ -32,31 +24,7 @@ const LineSegmentCreator: FunctionComponent<LineSegmentCreatorProps> = ({
 
   return (
     <div className={clsx(className)}>
-      {stationIdTuplelIndices.map((index) => {
-        const station = findStation(selectedStationIds[index]);
-
-        let value: string;
-
-        if (!station) {
-          value = "Please select a station";
-        } else {
-          value = station.name;
-        }
-
-        return (
-          <Button
-            label={value}
-            key={index}
-            onClick={() =>
-              globalEventDispatch({
-                type: "set-line-segment-creator-active-index",
-                index,
-              })
-            }
-            className={clsx({ "is-active": activeIndex === index })}
-          ></Button>
-        );
-      })}
+      <StationSelector />
       {canCreateLineSegment && (
         <Button
           label="Save"
@@ -67,7 +35,7 @@ const LineSegmentCreator: FunctionComponent<LineSegmentCreatorProps> = ({
               parentLineId: parentLineId,
             });
           }}
-        ></Button>
+        />
       )}
     </div>
   );

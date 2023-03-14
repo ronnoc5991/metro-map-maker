@@ -3,7 +3,7 @@ import { FunctionComponent, PropsWithChildren } from "react";
 import { BaseComponentProps } from "../../../types/BaseComponentProps";
 import { FontSize } from "../../../types/FontSize";
 import { TextAs } from "./types";
-import "./styles.scss";
+import styles from "./styles.module.scss";
 
 type Props = BaseComponentProps & {
   as: TextAs;
@@ -23,7 +23,10 @@ const Text: FunctionComponent<PropsWithChildren<Props>> = ({
   const Tag = as;
   return (
     <Tag
-      className={clsx("text", size, className, { thin: thin, italic: italic })}
+      className={clsx(styles.text, styles[`${size}`], className, {
+        thin: thin,
+        italic: italic,
+      })}
     >
       {children}
     </Tag>

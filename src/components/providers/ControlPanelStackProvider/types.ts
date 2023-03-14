@@ -26,6 +26,9 @@ export type ControlPanelStackAction =
       id: Line["id"];
     }
   | {
+      type: "open-route-planner";
+    }
+  | {
       type: "pop-frame-off-stack";
     }
   | {
