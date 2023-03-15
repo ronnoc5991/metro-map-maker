@@ -13,7 +13,6 @@ import { GlobalEventDispatchContext } from "../../../../providers/GlobalEventDis
 // - should we display an edit button? then update a state in app
 // - we should draw the segment's control points
 // - and we should allow for dragging them
-// also allow for clicking of the stations to visit the station detail page?
 
 export type LineSegmentDetailsProps = BaseComponentProps & {
   id: LineSegment["id"];
@@ -23,15 +22,26 @@ const LineSegmentDetails: FunctionComponent<LineSegmentDetailsProps> = ({
   id,
   className,
 }) => {
-  const { lineSegments } = useContext(WorldMapContext);
+  const { lineSegments, stations } = useContext(WorldMapContext);
   const globalEventDispatch = useContext(GlobalEventDispatchContext);
 
   const lineSegment = lineSegments[id];
 
   return (
     <div className={clsx(className)}>
-      <h1>{lineSegment.stationIds[0]}</h1>
-      <h1>{lineSegment.stationIds[1]}</h1>
+      {lineSegment.stationIds.map((stationId) => {
+        return (
+          <Button
+            onClick={() =>
+              globalEventDispatch({
+                type: "open-station-details",
+                id: stationId,
+              })
+            }
+            label={stations[stationId].name}
+          />
+        );
+      })}
 
       <Button
         icon="delete"

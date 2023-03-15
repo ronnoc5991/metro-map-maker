@@ -6,6 +6,8 @@ import Button from "../../../../molecules/Button/Button";
 import Input from "../../../../atoms/Input/Input";
 import { WorldMapContext } from "../../../../providers/WorldMapProvider/WorldMapProvider";
 import { GlobalEventDispatchContext } from "../../../../providers/GlobalEventDispatchProvider/GlobalEventDispatchProvider";
+import Heading from "../../../../atoms/Heading/Heading";
+import LineSegment from "../../../../../classes/LineSegment";
 
 export type LineDetailsProps = BaseComponentProps & {
   id: Line["id"];
@@ -15,10 +17,19 @@ const LineDetails: FunctionComponent<LineDetailsProps> = ({
   id,
   className,
 }) => {
-  const { lines } = useContext(WorldMapContext);
+  const { stations, lines, lineSegments } = useContext(WorldMapContext);
   const globalEventDispatch = useContext(GlobalEventDispatchContext);
 
   const line = lines[id];
+
+  const getLineSegmentName = (lineSegmentId: LineSegment["id"]) => {
+    const lineSegment = lineSegments[lineSegmentId];
+    const stationNames = lineSegment.stationIds.map(
+      (stationId) => stations[stationId].name
+    ) as [string, string];
+
+    return `${stationNames[0]} - ${stationNames[1]}`;
+  };
 
   return (
     <div className={clsx(className)}>
@@ -35,13 +46,13 @@ const LineDetails: FunctionComponent<LineDetailsProps> = ({
               })
             }
           />
-          <h1>Segments</h1>
+          <Heading as="h2">Segments</Heading>
           <ul>
             {line.segmentIds.map((childSegmentId) => {
               return (
-                <li key={`${childSegmentId}`}>
+                <li key={childSegmentId}>
                   <Button
-                    label={`${childSegmentId}`}
+                    label={getLineSegmentName(childSegmentId)}
                     onClick={() =>
                       globalEventDispatch({
                         type: "open-line-segment-details",
