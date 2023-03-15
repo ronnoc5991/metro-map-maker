@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
-import { WorldMapDispatch } from "../../WorldMapProvider/types";
+import { WorldMapAction } from "../../WorldMapProvider/types";
 import { GlobalEventDispatchAction } from "../types/GlobalEventDispatchAction";
 import { MouseMode } from "../../MouseModeProvider/MouseModeProvider";
 import { SelectedStationsAction } from "../../SelectedStationsProvider/types";
@@ -8,7 +8,7 @@ import { ControlPanelStackDispatch } from "../../ControlPanelStackProvider/types
 export type GlobalEventDispatch = (action: GlobalEventDispatchAction) => void;
 
 type GlobalEventDispatchGetter = (
-  worldMapDispatch: WorldMapDispatch,
+  worldMapDispatch: Dispatch<WorldMapAction>,
   controlPanelStackDispatch: ControlPanelStackDispatch,
   mouseModeDispatch: Dispatch<SetStateAction<MouseMode>>,
   selectedStationsDispatch: Dispatch<SelectedStationsAction>
@@ -63,33 +63,21 @@ export const getGlobalEventDispatch: GlobalEventDispatchGetter = (
           });
           break;
         }
-        case "create-new-station": {
-          const stationId = worldMapDispatch({
+        case "create-station": {
+          worldMapDispatch({
             type: "create-station",
             position: action.position,
           });
-          if (!stationId) return;
           mouseModeDispatch("exploration");
-          controlPanelStackDispatch({
-            type: "open-station-details",
-            id: stationId,
-          });
           break;
         }
         case "create-line": {
-          const lineId = worldMapDispatch({ type: "create-line" });
-          if (!lineId) return;
-          controlPanelStackDispatch({ type: "open-line-details", id: lineId });
+          worldMapDispatch({ type: "create-line" });
           break;
         }
         case "create-line-segment": {
-          const lineSegmentId = worldMapDispatch(action);
+          worldMapDispatch(action);
           controlPanelStackDispatch({ type: "pop-frame-off-stack" });
-          if (!lineSegmentId) return;
-          controlPanelStackDispatch({
-            type: "open-line-segment-details",
-            id: lineSegmentId,
-          });
           selectedStationsDispatch({ type: "reset" });
           mouseModeDispatch("exploration");
           break;

@@ -1,4 +1,7 @@
 import { Reducer } from "react";
+import Line from "../../../classes/Line";
+import LineSegment from "../../../classes/LineSegment";
+import Station from "../../../classes/Station";
 import { WorldMap, WorldMapAction } from "./types";
 
 const worldMapReducer: Reducer<WorldMap, WorldMapAction> = (
@@ -6,30 +9,98 @@ const worldMapReducer: Reducer<WorldMap, WorldMapAction> = (
   action
 ) => {
   switch (action.type) {
-    case "add-line": {
+    case "create-line": {
+      const newLine = new Line(worldMap.uniqueId);
+
       return {
         ...worldMap,
+        uniqueId: worldMap.uniqueId + 1,
         lines: {
           ...worldMap.lines,
-          [action.line.id]: action.line,
+          [newLine.id]: newLine,
         },
       };
     }
-    case "add-line-segment": {
+    case "create-station": {
+      const newStation = new Station(action.position, worldMap.uniqueId);
+
       return {
         ...worldMap,
-        lineSegments: {
-          ...worldMap.lineSegments,
-          [action.lineSegment.id]: action.lineSegment,
-        },
-      };
-    }
-    case "add-station": {
-      return {
-        ...worldMap,
+        uniqueId: worldMap.uniqueId + 1,
         stations: {
           ...worldMap.stations,
-          [action.station.id]: action.station,
+          [newStation.id]: newStation,
+        },
+      };
+    }
+    case "create-line-segment": {
+      // first, check if this line-segment exists already
+      for (const lineSegmentId in worldMap.lineSegments) {
+        const lineSegment = worldMap.lineSegments[lineSegmentId];
+
+        if (
+          lineSegment.stationIds.includes(action.stationIds[0]) &&
+          lineSegment.stationIds.includes(action.stationIds[1])
+        ) {
+          const newLineSegment = { ...lineSegment };
+          newLineSegment.parentLineIds.push(action.parentLineId);
+
+          const newParentLine = { ...worldMap.lines[action.parentLineId] };
+          newParentLine.segmentIds.push(newLineSegment.id);
+
+          return {
+            ...worldMap,
+            lines: {
+              ...worldMap.lines,
+              [newParentLine.id]: newParentLine,
+            },
+            lineSegments: {
+              ...worldMap.lineSegments,
+              [newLineSegment.id]: newLineSegment,
+            },
+          };
+        }
+      }
+
+      const newStations = { ...worldMap.stations };
+
+      const involvedStationCopies = action.stationIds.map((stationId) => ({
+        ...newStations[stationId],
+      })) as [Station, Station];
+
+      const newLineSegment = new LineSegment(
+        involvedStationCopies,
+        worldMap.uniqueId,
+        action.parentLineId
+      );
+
+      involvedStationCopies.forEach((station) => {
+        station.connectedLineSegmentIds = [
+          ...station.connectedLineSegmentIds,
+          newLineSegment.id,
+        ];
+      });
+
+      const newParentLine = { ...worldMap.lines[action.parentLineId] };
+      newParentLine.segmentIds = [
+        ...newParentLine.segmentIds,
+        newLineSegment.id,
+      ];
+
+      return {
+        uniqueId: worldMap.uniqueId + 1,
+        lines: {
+          ...worldMap.lines,
+          [newParentLine.id]: newParentLine,
+        },
+        lineSegments: {
+          ...worldMap.lineSegments,
+          [newLineSegment.id]: newLineSegment,
+        },
+        stations: {
+          ...newStations,
+          [involvedStationCopies[0].id]: involvedStationCopies[0],
+          [involvedStationCopies[1].id]: involvedStationCopies[1],
         },
       };
     }
@@ -82,6 +153,7 @@ const worldMapReducer: Reducer<WorldMap, WorldMapAction> = (
       delete newStations[action.id];
 
       return {
+        ...worldMap,
         stations: newStations,
         lineSegments: newLineSegments,
         lines: newLines,
@@ -140,6 +212,7 @@ const worldMapReducer: Reducer<WorldMap, WorldMapAction> = (
       delete newLineSegments[action.id];
 
       return {
+        ...worldMap,
         stations: newStations,
         lines: newLines,
         lineSegments: newLineSegments,
