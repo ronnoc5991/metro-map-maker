@@ -6,6 +6,6 @@ export default class Line {
   public segmentIds: Array<LineSegment["id"]> = [];
 
   constructor(public readonly id: number) {
-    this.name = `New Line - ${id}`;
+    this.name = `New Line`;
   }
 }

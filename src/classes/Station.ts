@@ -10,7 +10,7 @@ export default class Station {
   public cost: number;
 
   constructor(public position: Position, public id: number) {
-    this.name = `New Station - ${id}`;
+    this.name = `New Station`;
     this.cost = Infinity;
   }
 }
