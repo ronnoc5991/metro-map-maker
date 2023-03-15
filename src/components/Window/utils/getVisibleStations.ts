@@ -1,14 +1,22 @@
 import Station from "../../../classes/Station";
 import { Position } from "../../../types/Position";
 import { WindowBounds } from "../../../types/WindowBounds";
+import { WorldMap } from "../../providers/WorldMapProvider/types";
 
 const getVisibleStations = (
-  stations: Array<Station>,
+  stations: WorldMap["stations"],
   bounds: WindowBounds
-): Array<Station> =>
-  stations.filter((station) => {
-    return isStationVisible(station.position, Station.radius, bounds);
-  });
+): Array<Station> => {
+  const visibleStations = [];
+
+  for (const stationId in stations) {
+    const station = stations[stationId];
+    if (isStationVisible(station.position, Station.radius, bounds))
+      visibleStations.push(station);
+  }
+
+  return visibleStations;
+};
 
 function isStationVisible(
   { x, y }: Position,

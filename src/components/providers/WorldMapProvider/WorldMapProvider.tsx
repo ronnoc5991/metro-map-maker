@@ -40,20 +40,24 @@ const WorldMapProvider: FunctionComponent<PropsWithChildren> = ({
       }
       case "create-line-segment": {
         // TODO: refactor, DRY
-        const parentLine = map.lines.find(
-          (line) => line.id === action.parentLineId
-        ) as Line;
+        const parentLine = map.lines[action.parentLineId];
 
         const involvedStations = [
-          map.stations.find((station) => station.id === action.stationIds[0]),
-          map.stations.find((station) => station.id === action.stationIds[1]),
+          map.stations[action.stationIds[0]],
+          map.stations[action.stationIds[1]],
         ] as [Station, Station];
 
-        const preexistingLineSegment = map.lineSegments.find(
-          (lineSegment) =>
+        let preexistingLineSegment;
+
+        for (const lineSegmentId in map.lineSegments) {
+          const lineSegment = map.lineSegments[lineSegmentId];
+
+          if (
             lineSegment.stationIds.includes(action.stationIds[0]) &&
             lineSegment.stationIds.includes(action.stationIds[1])
-        );
+          )
+            preexistingLineSegment = lineSegment;
+        }
 
         if (!!preexistingLineSegment) {
           preexistingLineSegment.parentLineIds.push(action.parentLineId);

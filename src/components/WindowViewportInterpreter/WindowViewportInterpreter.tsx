@@ -110,13 +110,8 @@ const WindowViewportInterpreter: FunctionComponent<Props> = ({
 
   const translatedLineSegments: Array<BezierCurve> = visibleLineSegments
     .map((lineSegment) => {
-      const stationOne = stations.find(
-        (station) => station.id === lineSegment.stationIds[0]
-      )!;
-      const stationTwo = stations.find(
-        (station) => station.id === lineSegment.stationIds[1]
-      )!;
-      // TODO: fix these lazy !s
+      const stationOne = stations[lineSegment.stationIds[0]];
+      const stationTwo = stations[lineSegment.stationIds[1]];
 
       return {
         width:

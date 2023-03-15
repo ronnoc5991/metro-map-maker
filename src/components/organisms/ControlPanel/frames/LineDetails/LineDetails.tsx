@@ -18,7 +18,7 @@ const LineDetails: FunctionComponent<LineDetailsProps> = ({
   const { lines } = useContext(WorldMapContext);
   const globalEventDispatch = useContext(GlobalEventDispatchContext);
 
-  const line = lines.find((line) => line.id === id);
+  const line = lines[id];
 
   return (
     <div className={clsx(className)}>

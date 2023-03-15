@@ -7,169 +7,141 @@ const worldMapReducer: Reducer<WorldMap, WorldMapAction> = (
 ) => {
   switch (action.type) {
     case "add-line": {
-      const newLines = [...worldMap.lines, action.line];
       return {
         ...worldMap,
-        lines: newLines,
+        lines: {
+          ...worldMap.lines,
+          [action.line.id]: action.line,
+        },
       };
     }
     case "add-line-segment": {
-      const newLineSegments = [...worldMap.lineSegments, action.lineSegment];
       return {
         ...worldMap,
-        lineSegments: newLineSegments,
+        lineSegments: {
+          ...worldMap.lineSegments,
+          [action.lineSegment.id]: action.lineSegment,
+        },
       };
     }
     case "add-station": {
-      const newStations = [...worldMap.stations, action.station];
       return {
         ...worldMap,
-        stations: newStations,
+        stations: {
+          ...worldMap.stations,
+          [action.station.id]: action.station,
+        },
       };
     }
     case "update-line-name": {
-      const newLines = [...worldMap.lines];
-      const lineIndex = newLines.findIndex((line) => line.id === action.id);
-
-      if (lineIndex === -1) return worldMap;
-
-      newLines.splice(lineIndex, 1, {
-        ...newLines[lineIndex],
-        name: action.newName,
-      });
+      const newLine = { ...worldMap.lines[action.id] };
+      newLine.name = action.newName;
 
       return {
         ...worldMap,
-        lines: newLines,
+        lines: { ...worldMap.lines, [action.id]: newLine },
       };
     }
     case "update-station-name": {
-      // TODO: This is the same as the function above... DRY
-      const newStations = [...worldMap.stations];
-
-      const stationIndex = newStations.findIndex(
-        (station) => station.id === action.id
-      );
-
-      if (stationIndex === -1) return worldMap;
-
-      newStations.splice(stationIndex, 1, {
-        ...newStations[stationIndex],
-        name: action.newName,
-      });
+      const newStation = { ...worldMap.stations[action.id] };
+      newStation.name = action.newName;
 
       return {
         ...worldMap,
-        stations: newStations,
+        stations: { ...worldMap.stations, [action.id]: newStation },
       };
     }
     case "delete-station": {
-      const newStations = worldMap.stations.filter(
-        (station) => station.id !== action.id
-      );
-      // TODO: need to delete the line segments that this is a part of
+      const newStations = { ...worldMap.stations };
+      const newLineSegments = { ...worldMap.lineSegments };
+      const newLines = { ...worldMap.lines };
 
-      // need to find all of the line segment ids
-      // then delete those from each of the parent lines?
+      for (const lineSegmentId in newLineSegments) {
+        const lineSegment = newLineSegments[lineSegmentId];
 
-      const newLineSegments = worldMap.lineSegments.filter(
-        (lineSegment) => !lineSegment.stationIds.includes(action.id)
-      );
+        if (lineSegment.stationIds.includes(action.id)) {
+          lineSegment.stationIds.forEach((childStationId) => {
+            const newStation = { ...newStations[childStationId] };
+            newStation.connectedLineSegmentIds =
+              newStation.connectedLineSegmentIds.filter(
+                (id) => `${id}` !== lineSegmentId
+              );
+            newStations[childStationId] = newStation;
+          });
+          lineSegment.parentLineIds.forEach((parentLineId) => {
+            const newParentLine = { ...newLines[parentLineId] };
+            newParentLine.segmentIds = newParentLine.segmentIds.filter(
+              (segmentId) => `${segmentId}` !== lineSegmentId
+            );
+            newLines[parentLineId] = newParentLine;
+          });
+          delete newLineSegments[lineSegmentId];
+        }
+      }
+
+      delete newStations[action.id];
 
       return {
-        ...worldMap,
         stations: newStations,
         lineSegments: newLineSegments,
+        lines: newLines,
       };
     }
     case "delete-line": {
-      let newLineSegments = [...worldMap.lineSegments];
+      const newLines = { ...worldMap.lines };
+      const newLineSegments = { ...worldMap.lineSegments };
 
-      const line = worldMap.lines.find((line) => line.id === action.id);
+      const lineToBeDeleted = newLines[action.id];
 
-      if (!line) {
-        console.error(`Unable to find line with id: ${action.id}.`);
-        return worldMap;
-      }
+      lineToBeDeleted.segmentIds.forEach((lineSegmentId) => {
+        const newLineSegment = { ...newLineSegments[lineSegmentId] };
 
-      line.segmentIds.forEach((lineSegmentId) => {
-        const lineSegment = worldMap.lineSegments.find(
-          (lineSegment) => lineSegment.id === lineSegmentId
-        );
-        if (!lineSegment) {
-          console.error(
-            `Line with id: ${action.id} was holding a reference to an undefined lineSegment with id: ${lineSegmentId}.`
-          );
-          return worldMap;
-        }
-
-        lineSegment.parentLineIds = lineSegment.parentLineIds.filter(
+        newLineSegment.parentLineIds = newLineSegment.parentLineIds.filter(
           (id) => id !== action.id
         );
 
-        if (lineSegment.parentLineIds.length === 0) {
-          newLineSegments = newLineSegments.filter(
-            (lineSegment) => lineSegment.id !== lineSegmentId
-          );
+        if (newLineSegment.parentLineIds.length === 0) {
+          delete newLineSegments[lineSegmentId];
+        } else {
+          newLineSegments[lineSegmentId] = newLineSegment;
         }
       });
 
-      const newLines = [...worldMap.lines].filter(
-        (line) => line.id !== action.id
-      );
+      delete newLines[action.id];
 
-      return {
-        ...worldMap,
-        lines: newLines,
-        lineSegments: newLineSegments,
-      };
+      return { ...worldMap, lines: newLines, lineSegments: newLineSegments };
     }
     case "delete-line-segment": {
-      const lineSegment = worldMap.lineSegments.find(
-        (lineSegment) => lineSegment.id === action.id
-      );
-      if (!lineSegment) {
-        console.error(`Unable to find the line segment with id: ${action.id}`);
-        return worldMap;
-      }
+      const newLineSegments = { ...worldMap.lineSegments };
+      const newLines = { ...worldMap.lines };
+      const newStations = { ...worldMap.stations };
 
-      lineSegment.parentLineIds.forEach((parentLineId) => {
-        const parentLine = worldMap.lines.find(
-          (line) => line.id === parentLineId
-        );
+      const lineSegmentToBeDeleted = newLineSegments[action.id];
 
-        if (!parentLine) {
-          console.error(
-            `Line Segment was holding a reference to a non existent parent line with id: ${parentLineId}.`
-          );
-          return worldMap;
-        }
+      lineSegmentToBeDeleted.parentLineIds.forEach((parentLineId) => {
+        const newParentLine = { ...newLines[parentLineId] };
 
-        parentLine.segmentIds = parentLine.segmentIds.filter(
+        newParentLine.segmentIds = newParentLine.segmentIds.filter(
           (id) => id !== action.id
         );
+
+        newLines[parentLineId] = newParentLine;
       });
 
-      lineSegment.stationIds.forEach((id) => {
-        const station = worldMap.stations.find((station) => station.id === id);
+      lineSegmentToBeDeleted.stationIds.forEach((stationId) => {
+        const newStation = { ...newStations[stationId] };
 
-        if (!station) {
-          console.error(
-            `Line segment was holding a reference to a non existent station with id: ${id}`
-          );
-          return worldMap;
-        }
+        newStation.connectedLineSegmentIds =
+          newStation.connectedLineSegmentIds.filter((id) => id !== action.id);
 
-        station.connectedLineSegmentIds =
-          station.connectedLineSegmentIds.filter((id) => id !== action.id);
+        newStations[stationId] = newStation;
       });
 
-      const newLineSegments = [...worldMap.lineSegments].filter(
-        (segment) => segment.id !== action.id
-      );
+      delete newLineSegments[action.id];
 
       return {
-        ...worldMap,
+        stations: newStations,
+        lines: newLines,
         lineSegments: newLineSegments,
       };
     }

@@ -15,7 +15,7 @@ export default class LineSegment {
   // public isBeingEdited: boolean = true;
 
   constructor(
-    public stations: [Station, Station],
+    stations: [Station, Station],
     public readonly id: number,
     parentLineId: Line["id"]
   ) {

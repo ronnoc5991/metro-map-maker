@@ -15,7 +15,7 @@ const StationSelector: FunctionComponent = () => {
   const globalEventDispatch = useContext(GlobalEventDispatchContext);
 
   const findStation = (stationId: Station["id"] | null) =>
-    stations.find((station) => station.id === stationId);
+    stationId ? stations[stationId] : undefined;
 
   return (
     <>

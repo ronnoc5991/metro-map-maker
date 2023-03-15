@@ -1,23 +1,30 @@
 import LineSegment from "../../../classes/LineSegment";
-import Station from "../../../classes/Station";
 import { WindowBounds } from "../../../types/WindowBounds";
+import { WorldMap } from "../../providers/WorldMapProvider/types";
 
 const getVisibileLineSegments = (
-  lineSegments: Array<LineSegment>,
-  stations: Array<Station>,
+  lineSegments: WorldMap["lineSegments"],
+  stations: WorldMap["stations"],
   bounds: WindowBounds
-): Array<LineSegment> =>
-  lineSegments.filter((lineSegment) =>
-    isLineSegmentVisible(lineSegment, stations, bounds)
-  );
+): Array<LineSegment> => {
+  const visibleLineSegments = [];
+
+  for (const lineSegmentId in lineSegments) {
+    const lineSegment = lineSegments[lineSegmentId];
+    if (isLineSegmentVisible(lineSegment, stations, bounds))
+      visibleLineSegments.push(lineSegment);
+  }
+
+  return visibleLineSegments;
+};
 
 function isLineSegmentVisible(
   { stationIds }: LineSegment,
-  stations: Array<Station>,
+  stations: WorldMap["stations"],
   { minX, maxX, minY, maxY }: WindowBounds
 ) {
-  const stationOne = stations.find((station) => station.id === stationIds[0]);
-  const stationTwo = stations.find((station) => station.id === stationIds[1]);
+  const stationOne = stations[stationIds[0]];
+  const stationTwo = stations[stationIds[1]];
 
   if (!stationOne || !stationTwo) return false;
 

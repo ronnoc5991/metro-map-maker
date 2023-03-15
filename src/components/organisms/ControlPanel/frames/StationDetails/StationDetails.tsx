@@ -21,23 +21,15 @@ const StationDetails: FunctionComponent<StationDetailsProps> = ({
   const { stations, lineSegments, lines } = useContext(WorldMapContext);
   const globalEventDispatch = useContext(GlobalEventDispatchContext);
 
-  const station = stations.find((station) => station.id === id);
-
-  if (!station) return <>No station found!</>;
+  const station = stations[id];
 
   const parentLines = new Set<Line>();
 
   station.connectedLineSegmentIds.forEach((lineSegmentId) => {
-    const lineSegment = lineSegments.find(
-      ({ id: segmentId }) => segmentId === lineSegmentId
-    );
-
-    if (!lineSegment) return;
+    const lineSegment = lineSegments[lineSegmentId];
 
     lineSegment.parentLineIds.forEach((parentLineId) => {
-      const parentLine = lines.find((line) => line.id === parentLineId);
-
-      if (!parentLine) return;
+      const parentLine = lines[parentLineId];
 
       parentLines.add(parentLine);
     });

@@ -26,9 +26,7 @@ const LineSegmentDetails: FunctionComponent<LineSegmentDetailsProps> = ({
   const { lineSegments } = useContext(WorldMapContext);
   const globalEventDispatch = useContext(GlobalEventDispatchContext);
 
-  const lineSegment = lineSegments.find((lineSegment) => lineSegment.id === id);
-
-  if (!lineSegment) return null;
+  const lineSegment = lineSegments[id];
 
   return (
     <div className={clsx(className)}>

@@ -4,9 +4,9 @@ import Station from "../../../classes/Station";
 import { Position } from "../../../types/Position";
 
 export type WorldMap = {
-  stations: Array<Station>;
-  lineSegments: Array<LineSegment>;
-  lines: Array<Line>;
+  stations: Record<Station["id"], Station>;
+  lineSegments: Record<LineSegment["id"], LineSegment>;
+  lines: Record<Line["id"], Line>;
 };
 
 export type WorldMapDispatch = (

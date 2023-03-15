@@ -14,7 +14,7 @@ type Item = { name: string; id: Station["id"] | Line["id"] };
 
 type Props = BaseComponentProps & {
   title: string;
-  items: Array<Item>;
+  items: Record<string, Item>;
   itemIconName: IconProps["name"];
   onItemSelect: (id: Item["id"]) => void;
   onNewItemClick: () => void;
@@ -28,6 +28,12 @@ const ItemList = ({
   onNewItemClick,
   className,
 }: Props) => {
+  const itemsArray = [];
+
+  for (const itemId in items) {
+    itemsArray.push(items[itemId]);
+  }
+
   return (
     <div className={clsx("item-list", className)}>
       <Heading as="h1" className="title">
@@ -41,7 +47,7 @@ const ItemList = ({
             onClick={onNewItemClick}
           />
         </li>
-        {items.map((item) => {
+        {itemsArray.map((item) => {
           return (
             <li key={item.id}>
               <Button
