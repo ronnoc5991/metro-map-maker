@@ -2,11 +2,10 @@ import clsx from "clsx";
 import { FunctionComponent, PropsWithChildren } from "react";
 import { BaseComponentProps } from "../../../types/BaseComponentProps";
 import { FontSize } from "../../../types/FontSize";
-import { TextAs } from "./types";
 import styles from "./styles.module.scss";
 
 type Props = BaseComponentProps & {
-  as: TextAs;
+  as: "p" | "span";
   size?: FontSize;
   thin?: boolean;
   italic?: boolean;

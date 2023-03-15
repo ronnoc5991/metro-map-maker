@@ -34,31 +34,16 @@ const worldMapReducer: Reducer<WorldMap, WorldMapAction> = (
       };
     }
     case "create-line-segment": {
-      // first, check if this line-segment exists already
       for (const lineSegmentId in worldMap.lineSegments) {
         const lineSegment = worldMap.lineSegments[lineSegmentId];
 
         if (
+          lineSegment.parentLineId === action.parentLineId &&
           lineSegment.stationIds.includes(action.stationIds[0]) &&
           lineSegment.stationIds.includes(action.stationIds[1])
         ) {
-          const newLineSegment = { ...lineSegment };
-          newLineSegment.parentLineIds.push(action.parentLineId);
-
-          const newParentLine = { ...worldMap.lines[action.parentLineId] };
-          newParentLine.segmentIds.push(newLineSegment.id);
-
-          return {
-            ...worldMap,
-            lines: {
-              ...worldMap.lines,
-              [newParentLine.id]: newParentLine,
-            },
-            lineSegments: {
-              ...worldMap.lineSegments,
-              [newLineSegment.id]: newLineSegment,
-            },
-          };
+          // this lineSegment already exists, we should do nothing!
+          return { ...worldMap };
         }
       }
 
@@ -139,13 +124,13 @@ const worldMapReducer: Reducer<WorldMap, WorldMapAction> = (
               );
             newStations[childStationId] = newStation;
           });
-          lineSegment.parentLineIds.forEach((parentLineId) => {
-            const newParentLine = { ...newLines[parentLineId] };
-            newParentLine.segmentIds = newParentLine.segmentIds.filter(
-              (segmentId) => `${segmentId}` !== lineSegmentId
-            );
-            newLines[parentLineId] = newParentLine;
-          });
+
+          const newParentLine = { ...newLines[lineSegment.parentLineId] };
+          newParentLine.segmentIds = newParentLine.segmentIds.filter(
+            (segmentId) => `${segmentId}` !== lineSegmentId
+          );
+          newLines[lineSegment.parentLineId] = newParentLine;
+
           delete newLineSegments[lineSegmentId];
         }
       }
@@ -166,17 +151,7 @@ const worldMapReducer: Reducer<WorldMap, WorldMapAction> = (
       const lineToBeDeleted = newLines[action.id];
 
       lineToBeDeleted.segmentIds.forEach((lineSegmentId) => {
-        const newLineSegment = { ...newLineSegments[lineSegmentId] };
-
-        newLineSegment.parentLineIds = newLineSegment.parentLineIds.filter(
-          (id) => id !== action.id
-        );
-
-        if (newLineSegment.parentLineIds.length === 0) {
-          delete newLineSegments[lineSegmentId];
-        } else {
-          newLineSegments[lineSegmentId] = newLineSegment;
-        }
+        delete newLineSegments[lineSegmentId];
       });
 
       delete newLines[action.id];
@@ -190,15 +165,14 @@ const worldMapReducer: Reducer<WorldMap, WorldMapAction> = (
 
       const lineSegmentToBeDeleted = newLineSegments[action.id];
 
-      lineSegmentToBeDeleted.parentLineIds.forEach((parentLineId) => {
-        const newParentLine = { ...newLines[parentLineId] };
+      const newParentLine = {
+        ...newLines[lineSegmentToBeDeleted.parentLineId],
+      };
 
-        newParentLine.segmentIds = newParentLine.segmentIds.filter(
-          (id) => id !== action.id
-        );
-
-        newLines[parentLineId] = newParentLine;
-      });
+      newParentLine.segmentIds = newParentLine.segmentIds.filter(
+        (id) => id !== action.id
+      );
+      newLines[lineSegmentToBeDeleted.parentLineId] = newParentLine;
 
       lineSegmentToBeDeleted.stationIds.forEach((stationId) => {
         const newStation = { ...newStations[stationId] };

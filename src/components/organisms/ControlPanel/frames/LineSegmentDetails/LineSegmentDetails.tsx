@@ -32,6 +32,7 @@ const LineSegmentDetails: FunctionComponent<LineSegmentDetailsProps> = ({
       {lineSegment.stationIds.map((stationId) => {
         return (
           <Button
+            key={stationId}
             onClick={() =>
               globalEventDispatch({
                 type: "open-station-details",

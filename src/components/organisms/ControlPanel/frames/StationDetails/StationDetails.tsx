@@ -23,17 +23,17 @@ const StationDetails: FunctionComponent<StationDetailsProps> = ({
 
   const station = stations[id];
 
-  const parentLines = new Set<Line>();
+  // const parentLines = new Set<Line>();
 
-  station.connectedLineSegmentIds.forEach((lineSegmentId) => {
-    const lineSegment = lineSegments[lineSegmentId];
+  // station.connectedLineSegmentIds.forEach((lineSegmentId) => {
+  //   const lineSegment = lineSegments[lineSegmentId];
 
-    lineSegment.parentLineIds.forEach((parentLineId) => {
-      const parentLine = lines[parentLineId];
+  //   lineSegment.parentLineId.forEach((parentLineId) => {
+  //     const parentLine = lines[parentLineId];
 
-      parentLines.add(parentLine);
-    });
-  });
+  //     parentLines.add(parentLine);
+  //   });
+  // });
 
   return (
     <div className={clsx("StationDetails", className)}>
@@ -56,7 +56,7 @@ const StationDetails: FunctionComponent<StationDetailsProps> = ({
           globalEventDispatch({ type: "delete-station", id: station.id })
         }
       />
-      {parentLines.size > 0 && (
+      {/* {parentLines.size > 0 && (
         <>
           <Heading as="h2" size="medium">
             {station.name} sits on lines:
@@ -80,7 +80,7 @@ const StationDetails: FunctionComponent<StationDetailsProps> = ({
             })}
           </ul>
         </>
-      )}
+      )} */}
     </div>
   );
 };

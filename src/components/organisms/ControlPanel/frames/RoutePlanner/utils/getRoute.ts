@@ -1,78 +1,119 @@
-// import LineSegment from "../../../../../../classes/LineSegment";
-// import Station from "../../../../../../classes/Station";
+import Line from "../../../../../../classes/Line";
+import Station from "../../../../../../classes/Station";
+import getEuclideanDistanceBetweenPoints from "../../../../../../utils/getEuclideanDistanceBetweenPoints";
+import { WorldMap } from "../../../../../providers/WorldMapProvider/types";
 
-// type Route = {};
+// we can put this somewhere else later
+const lineChangePenalty = 10;
 
-// function getRoute(
-//   startStation: Station,
-//   endStation: Station,
-//   stations: Array<Station>,
-//   lineSegments: Array<LineSegment>
-// ): Route {
-//   // where to store the costs?
-//   // on the vertices?
-//   startStation.cost = 0;
+type Step = {
+  stationId: Station["id"];
+  departingLineId?: Line["id"];
+};
 
-//   const unvisitedStations: Array<Station> = [
-//     startStation,
-//     ...stations.filter((station) => station !== startStation),
-//   ];
+export type Route = Array<Step>;
 
-//   let currentStation = unvisitedStations[0];
+type Vertex = {
+  stationId: Station["id"];
+  cost: number;
+  from: {
+    vertex: Vertex;
+    lineId: Line["id"];
+  } | null;
+};
 
-//   while (unvisitedStations[0].cost < Infinity) {
-//     if (currentStation === endStation) break;
+function getRoute(
+  startStation: Station,
+  endStation: Station,
+  stations: WorldMap["stations"],
+  lineSegments: WorldMap["lineSegments"]
+): Route {
+  const startVertex: Vertex = {
+    stationId: startStation.id,
+    cost: 0,
+    from: null,
+  };
 
-//     currentStation.connectedLineSegmentIds.map(id => lineSegments.) .edges.forEach((edge) => {
-//       const connectedVertex = edge.vertices.find(
-//         (vertex) => vertex !== currentVertex
-//       );
+  const unexpandedVertices: Array<Vertex> = [startVertex];
 
-//       if (!connectedVertex) return;
+  let currentVertex = startVertex;
 
-//       if (connectedVertex.distanceToTarget === null && this.end !== null) {
-//         connectedVertex.distanceToTarget = getEuclideanDistanceBetweenPoints(
-//           connectedVertex.position,
-//           this.end.position
-//         );
-//       }
-//       const newCost =
-//         currentVertex.cost +
-//         edge.weight +
-//         (connectedVertex.distanceToTarget ?? 0);
+  while (unexpandedVertices[0].cost < Infinity) {
+    if (currentVertex.stationId === endStation.id) break;
 
-//       if (newCost < connectedVertex.cost) {
-//         connectedVertex.cost = newCost;
-//         connectedVertex.previousVertexInPath = currentVertex;
-//       }
-//     });
+    const edgesDepartingCurrentVertex = stations[
+      currentVertex.stationId
+    ].connectedLineSegmentIds
+      .map((id) => lineSegments[id])
+      .filter((edge) => {
+        if (currentVertex.from === null) return true;
 
-//     unvisitedVertices.shift();
+        // don't go down an edge if it leads to where we just were
+        if (edge.stationIds.includes(currentVertex.from.vertex.stationId))
+          return false;
 
-//     unvisitedVertices.sort((a, b) => {
-//       if (a.cost < b.cost) return -1;
-//       if (a.cost === b.cost) {
-//         return 0;
-//       }
+        return true;
+      });
 
-//       return 1;
-//     });
+    edgesDepartingCurrentVertex.forEach((edge) => {
+      const vertexStationId =
+        edge.stationIds[0] === currentVertex.stationId
+          ? edge.stationIds[1]
+          : edge.stationIds[0];
 
-//     currentVertex = unvisitedVertices[0];
-//   }
+      const areChangingLines =
+        !!currentVertex.from && currentVertex.from.lineId !== edge.parentLineId;
 
-//   const path = this.recreatePath(this.end);
-//   this.resetGraph();
-//   return path;
-// }
+      const vertexCost =
+        currentVertex.cost +
+        edge.weight +
+        (areChangingLines ? lineChangePenalty : 0) +
+        getEuclideanDistanceBetweenPoints(
+          stations[currentVertex.stationId].position,
+          endStation.position
+        );
 
-// // TODO: implement this
-// function resetGraph() {
-//     this.graph.vertices.forEach((vertex) => {
-//       vertex.cost = Infinity;
-//       vertex.distanceToTarget = null;
-//       vertex.previousVertexInPath = null;
-//     });
-//   }
+      const newVertex: Vertex = {
+        stationId: vertexStationId,
+        cost: vertexCost,
+        from: {
+          vertex: currentVertex,
+          lineId: edge.parentLineId,
+        },
+      };
 
-export {};
+      unexpandedVertices.push(newVertex);
+    });
+
+    unexpandedVertices.shift();
+
+    unexpandedVertices.sort((a, b) => {
+      if (a.cost < b.cost) return -1;
+      if (a.cost === b.cost) {
+        return 0;
+      }
+
+      return 1;
+    });
+
+    currentVertex = unexpandedVertices[0];
+  }
+
+  const route = recreateRoute(currentVertex);
+
+  return route;
+}
+
+function recreateRoute(
+  currentVertex: Vertex,
+  departingLineId?: Line["id"]
+): Route {
+  return [
+    ...(!!currentVertex.from
+      ? recreateRoute(currentVertex.from.vertex, currentVertex.from.lineId)
+      : []),
+    { stationId: currentVertex.stationId, departingLineId },
+  ];
+}
+
+export default getRoute;
