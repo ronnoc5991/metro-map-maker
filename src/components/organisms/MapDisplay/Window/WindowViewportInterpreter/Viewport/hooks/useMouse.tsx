@@ -1,6 +1,6 @@
 import { MouseEventHandler, useRef } from "react";
-import { CustomDragEventHandler } from "../../../types/CustomDragEventHandler";
-import { Position } from "../../../types/Position";
+import { CustomDragEventHandler } from "../../../../../../../types/CustomDragEventHandler";
+import { Position } from "../../../../../../../types/Position";
 
 const DRAGGING_THRESHOLD = 5;
 

@@ -9,18 +9,18 @@ import {
   getViewportPositionFromWindowPosition,
   getWindowPositionFromViewportPosition,
 } from "./utils/translators";
-import { CustomClickEventHandler } from "../../types/CustomClickEventHandler";
-import { CustomDragEventHandler } from "../../types/CustomDragEventHandler";
-import { WindowBounds } from "../../types/WindowBounds";
-import { StraightLine } from "../../types/StraightLine";
-import { Dimensions } from "../../types/Dimensions";
-import Viewport from "../Viewport/Viewport";
-import Station from "../../classes/Station";
-import { DrawableStation } from "../Viewport/utils/drawStations";
-import { BaseComponentProps } from "../../types/BaseComponentProps";
-import LineSegment from "../../classes/LineSegment";
-import { BezierCurve } from "../../types/BezierCurve";
-import { WorldMapContext } from "../providers/WorldMapProvider/WorldMapProvider";
+import { CustomClickEventHandler } from "../../../../../types/CustomClickEventHandler";
+import { CustomDragEventHandler } from "../../../../../types/CustomDragEventHandler";
+import { WindowBounds } from "../../../../../types/WindowBounds";
+import { StraightLine } from "../../../../../types/StraightLine";
+import { Dimensions } from "../../../../../types/Dimensions";
+import Viewport from "./Viewport/Viewport";
+import Station from "../../../../../classes/Station";
+import { DrawableStation } from "./Viewport/utils/drawStations";
+import { BaseComponentProps } from "../../../../../types/BaseComponentProps";
+import LineSegment from "../../../../../classes/LineSegment";
+import { BezierCurve } from "../../../../../types/BezierCurve";
+import { WorldMapContext } from "../../../../providers/WorldMapProvider/WorldMapProvider";
 
 // Responsibility
 // Transform coordinates from above to viewport coordinates

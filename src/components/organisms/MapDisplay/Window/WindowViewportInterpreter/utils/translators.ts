@@ -1,6 +1,6 @@
-import { Dimensions } from "../../../types/Dimensions";
-import { Position } from "../../../types/Position";
-import { WindowBounds } from "../../../types/WindowBounds";
+import { Dimensions } from "../../../../../../types/Dimensions";
+import { Position } from "../../../../../../types/Position";
+import { WindowBounds } from "../../../../../../types/WindowBounds";
 
 type Translator = (
   value: number,

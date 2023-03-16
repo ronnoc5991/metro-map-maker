@@ -8,18 +8,18 @@ import {
   WheelEventHandler,
 } from "react";
 import clsx from "clsx";
-import { CustomClickEventHandler } from "../../types/CustomClickEventHandler";
-import { CustomDragEventHandler } from "../../types/CustomDragEventHandler";
-import { BaseComponentProps } from "../../types/BaseComponentProps";
-import { WindowBounds } from "../../types/WindowBounds";
-import { Dimensions } from "../../types/Dimensions";
+import { CustomClickEventHandler } from "../../../../types/CustomClickEventHandler";
+import { CustomDragEventHandler } from "../../../../types/CustomDragEventHandler";
+import { BaseComponentProps } from "../../../../types/BaseComponentProps";
+import { WindowBounds } from "../../../../types/WindowBounds";
+import { Dimensions } from "../../../../types/Dimensions";
 import getVisibileLineSegments from "./utils/getVisibleLineSegments";
 import getVisibleGridLines from "./utils/getVisibleGridLines";
 import getVisibleStations from "./utils/getVisibleStations";
 import isZoomAllowed from "./utils/isZoomAllowed";
-import WindowViewportInterpreter from "../WindowViewportInterpreter/WindowViewportInterpreter";
-import { WorldMapContext } from "../providers/WorldMapProvider/WorldMapProvider";
-import ButtonList from "../organisms/ButtonList/ButtonList";
+import WindowViewportInterpreter from "./WindowViewportInterpreter/WindowViewportInterpreter";
+import { WorldMapContext } from "../../../providers/WorldMapProvider/WorldMapProvider";
+import ButtonList from "../../ButtonList/ButtonList";
 import config from "./config/config";
 import "./styles.scss";
 
@@ -34,10 +34,10 @@ type WindowProps = BaseComponentProps & {
 const Window: FunctionComponent<WindowProps> = ({
   isDraggable,
   viewportDimensions,
-  className,
   onMouseDown,
   onDrag,
   onMouseUp,
+  className,
 }) => {
   const zoomPercentage = useRef(config.DEFAULT_ZOOM_PERCENTAGE);
   const [bounds, setBounds] = useState<WindowBounds>({

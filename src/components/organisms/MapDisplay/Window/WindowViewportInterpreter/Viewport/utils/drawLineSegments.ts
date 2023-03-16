@@ -1,4 +1,4 @@
-import { BezierCurve } from "../../../types/BezierCurve";
+import { BezierCurve } from "../../../../../../../types/BezierCurve";
 
 const drawLineSegments = (
   lineSegments: Array<BezierCurve>,

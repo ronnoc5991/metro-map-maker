@@ -1,4 +1,4 @@
-import { StraightLine } from "../../../types/StraightLine";
+import { StraightLine } from "../../../../../../../types/StraightLine";
 
 const drawGridLines = (
   gridLines: Array<StraightLine>,

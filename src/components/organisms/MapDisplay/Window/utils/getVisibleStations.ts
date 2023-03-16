@@ -1,7 +1,7 @@
-import Station from "../../../classes/Station";
-import { Position } from "../../../types/Position";
-import { WindowBounds } from "../../../types/WindowBounds";
-import { WorldMap } from "../../providers/WorldMapProvider/types";
+import Station from "../../../../../classes/Station";
+import { Position } from "../../../../../types/Position";
+import { WindowBounds } from "../../../../../types/WindowBounds";
+import { WorldMap } from "../../../../providers/WorldMapProvider/types";
 
 const getVisibleStations = (
   stations: WorldMap["stations"],

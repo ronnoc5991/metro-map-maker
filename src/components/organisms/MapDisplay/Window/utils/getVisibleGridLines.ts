@@ -1,6 +1,6 @@
-import { sizes } from "../../../config";
-import { StraightLine } from "../../../types/StraightLine";
-import { WindowBounds } from "../../../types/WindowBounds";
+import { sizes } from "../../../../../config";
+import { StraightLine } from "../../../../../types/StraightLine";
+import { WindowBounds } from "../../../../../types/WindowBounds";
 
 type LineGetter = (
   from: number,

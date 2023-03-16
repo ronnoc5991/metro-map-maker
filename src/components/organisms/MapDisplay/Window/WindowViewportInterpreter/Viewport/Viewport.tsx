@@ -6,16 +6,16 @@ import {
   WheelEventHandler,
 } from "react";
 import clsx from "clsx";
-import { BaseComponentProps } from "../../types/BaseComponentProps";
-import { CustomDragEventHandler } from "../../types/CustomDragEventHandler";
-import { Dimensions } from "../../types/Dimensions";
-import { StraightLine } from "../../types/StraightLine";
+import { BaseComponentProps } from "../../../../../../types/BaseComponentProps";
+import { CustomDragEventHandler } from "../../../../../../types/CustomDragEventHandler";
+import { Dimensions } from "../../../../../../types/Dimensions";
+import { StraightLine } from "../../../../../../types/StraightLine";
 import { DrawableStation } from "./utils/drawStations";
 import drawGridLines from "./utils/drawGridLines";
 import drawStations from "./utils/drawStations";
 import useMouse from "./hooks/useMouse";
 import drawLineSegments from "./utils/drawLineSegments";
-import { BezierCurve } from "../../types/BezierCurve";
+import { BezierCurve } from "../../../../../../types/BezierCurve";
 
 type ViewportProps = BaseComponentProps & {
   dimensions: Dimensions;

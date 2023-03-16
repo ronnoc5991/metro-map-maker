@@ -1,5 +1,5 @@
-import Station from "../../../classes/Station";
-import { Position } from "../../../types/Position";
+import Station from "../../../../../../../classes/Station";
+import { Position } from "../../../../../../../types/Position";
 
 export type DrawableStation = Station & {
   radius: number;
