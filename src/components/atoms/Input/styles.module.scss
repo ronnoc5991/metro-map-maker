@@ -3,8 +3,10 @@
   border-radius: var(--border-radius-small);
   text-align: center;
   width: 100%;
+  border: 1px solid black;
 
   &:focus-visible {
     box-shadow: var(--default-box-shadow);
+    border: 2px solid red;
   }
 }

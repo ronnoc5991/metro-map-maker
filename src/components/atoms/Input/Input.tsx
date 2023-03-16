@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { FunctionComponent, HTMLInputTypeAttribute } from "react";
+import { FocusEventHandler, forwardRef, HTMLInputTypeAttribute } from "react";
 import { BaseComponentProps } from "../../../types/BaseComponentProps";
 import styles from "./styles.module.scss";
 
@@ -7,22 +7,22 @@ type Props = BaseComponentProps & {
   type: HTMLInputTypeAttribute;
   value: string;
   onChange: (newValue: string) => void;
+  onFocus?: FocusEventHandler;
 };
 
-const Input: FunctionComponent<Props> = ({
-  type,
-  value,
-  onChange,
-  className,
-}) => {
-  return (
-    <input
-      type={type}
-      value={value}
-      onChange={(event) => onChange(event.target.value)}
-      className={clsx(styles.input, className)}
-    />
-  );
-};
+const Input = forwardRef<HTMLInputElement, Props>(
+  ({ type, value, onChange, onFocus, className }, ref) => {
+    return (
+      <input
+        ref={ref}
+        type={type}
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        onFocus={onFocus}
+        className={clsx(styles.input, className)}
+      />
+    );
+  }
+);
 
 export default Input;
