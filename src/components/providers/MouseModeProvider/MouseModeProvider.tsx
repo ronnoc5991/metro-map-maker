@@ -2,6 +2,8 @@ import { FunctionComponent, PropsWithChildren, useState } from "react";
 import { MouseModeDispatchContext } from "./contexts/MouseModeDispatchContext";
 import { MouseModeContext } from "./contexts/MouseModeContext";
 
+// TODO: see if mouse mode could drive more of the change in the UI
+
 export type MouseMode =
   | "exploration"
   | "station-creation"

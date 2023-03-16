@@ -1,25 +1,29 @@
 import Station from "../../../classes/Station";
 
-export const stationIdTupleIndices = [0, 1] as const;
+export const tupleIndices = [0, 1] as const;
 
-export type ActiveTupleIndex = typeof stationIdTupleIndices[number];
+export type TupleIndex = typeof tupleIndices[number];
 
 export type StationIdTuple = [Station["id"] | null, Station["id"] | null];
 
 export type SelectedStationsState = {
   selectedStationIds: StationIdTuple;
-  activeIndex: ActiveTupleIndex;
+  activeIndex: TupleIndex;
 };
+
+// TODO: look into ways of creating and destroying this context at the appropriate times
+// that way we do not have to ensure that it is 'clean'
 
 export type SelectedStationsAction =
   | {
+      type: "reset";
+      index?: TupleIndex;
+    }
+  | {
       type: "set-active-index";
-      index: ActiveTupleIndex;
+      index: TupleIndex;
     }
   | {
       type: "select-station";
-      station: Station;
-    }
-  | {
-      type: "reset";
+      id: Station["id"];
     };

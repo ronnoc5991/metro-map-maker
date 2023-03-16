@@ -48,7 +48,7 @@ const WithMouseEventHandlers = <T,>({ Component, props }: Props<T>) => {
       if (!clickedStation) return;
       globalEventDispatch({
         type: "select-station",
-        station: clickedStation,
+        id: clickedStation.id,
       });
     }
     // deselect the edge control point we were dragging?

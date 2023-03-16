@@ -7,15 +7,11 @@ import {
 } from "react";
 import { defaultState } from "./config";
 import reducer from "./reducer";
-import {
-  ActiveTupleIndex,
-  SelectedStationsAction,
-  StationIdTuple,
-} from "./types";
+import { TupleIndex, SelectedStationsAction, StationIdTuple } from "./types";
 
 export const SelectedStationsContext = createContext<{
   selectedStationIds: StationIdTuple;
-  activeIndex: ActiveTupleIndex;
+  activeIndex: TupleIndex;
 }>(defaultState);
 
 export const SelectedStationsDispatchContext = createContext<

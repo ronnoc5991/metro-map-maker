@@ -8,10 +8,11 @@ type Props = BaseComponentProps & {
   value: string;
   onChange: (newValue: string) => void;
   onFocus?: FocusEventHandler;
+  onBlur?: FocusEventHandler;
 };
 
 const Input = forwardRef<HTMLInputElement, Props>(
-  ({ type, value, onChange, onFocus, className }, ref) => {
+  ({ type, value, onChange, onFocus, onBlur, className }, ref) => {
     return (
       <input
         ref={ref}
@@ -19,6 +20,7 @@ const Input = forwardRef<HTMLInputElement, Props>(
         value={value}
         onChange={(event) => onChange(event.target.value)}
         onFocus={onFocus}
+        onBlur={onBlur}
         className={clsx(styles.input, className)}
       />
     );
