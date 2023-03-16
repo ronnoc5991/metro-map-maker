@@ -1,6 +1,6 @@
 import { FunctionComponent, useRef } from "react";
 import GlobalEventDispatchProvider from "./components/providers/GlobalEventDispatchProvider/GlobalEventDispatchProvider";
-import LineSegmentCreationProvider from "./components/providers/SelectedStationsProvider/SelectedStationsProvider";
+import SelectedStationsProvider from "./components/providers/SelectedStationsProvider/SelectedStationsProvider";
 import ControlPanelStackProvider from "./components/providers/ControlPanelStackProvider/ControlPanelStackProvider";
 import WithMouseEventHandlers from "./components/WithMouseEventHandlers/WithMouseEventHandlers";
 import MouseModeProvider from "./components/providers/MouseModeProvider/MouseModeProvider";
@@ -30,7 +30,7 @@ const App: FunctionComponent = () => {
       <WorldMapProvider>
         <ControlPanelStackProvider>
           <MouseModeProvider>
-            <LineSegmentCreationProvider>
+            <SelectedStationsProvider>
               <GlobalEventDispatchProvider>
                 <WithMouseEventHandlers
                   Component={Window}
@@ -44,7 +44,7 @@ const App: FunctionComponent = () => {
                   className={styles["control-panel-controls"]}
                 />
               </GlobalEventDispatchProvider>
-            </LineSegmentCreationProvider>
+            </SelectedStationsProvider>
           </MouseModeProvider>
         </ControlPanelStackProvider>
       </WorldMapProvider>

@@ -28,12 +28,6 @@ const ItemList = ({
   onNewItemClick,
   className,
 }: Props) => {
-  const itemsArray = [];
-
-  for (const itemId in items) {
-    itemsArray.push(items[itemId]);
-  }
-
   return (
     <div className={clsx("item-list", className)}>
       <Heading as="h1" className="title">
@@ -47,7 +41,7 @@ const ItemList = ({
             onClick={onNewItemClick}
           />
         </li>
-        {itemsArray.map((item) => {
+        {Object.values(items).map((item) => {
           return (
             <li key={item.id}>
               <Button
