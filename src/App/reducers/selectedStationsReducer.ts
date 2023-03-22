@@ -1,18 +1,41 @@
 import { Reducer } from "react";
-import { defaultState } from "./config";
-import {
-  SelectedStationsAction,
-  SelectedStationsState,
-  StationIdTuple,
-} from "./types";
+import Station from "../../classes/Station";
 
-const reducer: Reducer<SelectedStationsState, SelectedStationsAction> = (
-  currentState,
-  action
-) => {
+export const tupleIndices = [0, 1] as const;
+export type TupleIndex = typeof tupleIndices[number];
+export type StationIdTuple = [Station["id"] | null, Station["id"] | null];
+
+export type SelectedStationsState = {
+  selectedStationIds: StationIdTuple;
+  activeIndex: TupleIndex;
+};
+
+export const defaultSelectedStations: SelectedStationsState = {
+  activeIndex: 0,
+  selectedStationIds: [null, null],
+};
+
+export type SelectedStationsAction =
+  | {
+      type: "reset";
+      index?: TupleIndex;
+    }
+  | {
+      type: "set-active-index";
+      index: TupleIndex;
+    }
+  | {
+      type: "select-station";
+      id: Station["id"];
+    };
+
+const selectedStationsReducer: Reducer<
+  SelectedStationsState,
+  SelectedStationsAction
+> = (currentState, action) => {
   switch (action.type) {
     case "reset": {
-      if (action.index === undefined) return { ...defaultState };
+      if (action.index === undefined) return { ...defaultSelectedStations };
 
       const newIds = [...currentState.selectedStationIds] as StationIdTuple;
       newIds[action.index] = null;
@@ -43,4 +66,4 @@ const reducer: Reducer<SelectedStationsState, SelectedStationsAction> = (
   }
 };
 
-export default reducer;
+export default selectedStationsReducer;

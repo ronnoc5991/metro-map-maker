@@ -1,9 +1,4 @@
-import {
-  FunctionComponent,
-  MouseEventHandler,
-  useContext,
-  WheelEventHandler,
-} from "react";
+import { FunctionComponent, MouseEventHandler, WheelEventHandler } from "react";
 import clsx from "clsx";
 import {
   getViewportPositionFromWindowPosition,
@@ -20,7 +15,7 @@ import { DrawableStation } from "./Viewport/utils/drawStations";
 import { BaseComponentProps } from "../../../../../types/BaseComponentProps";
 import LineSegment from "../../../../../classes/LineSegment";
 import { BezierCurve } from "../../../../../types/BezierCurve";
-import { WorldMapContext } from "../../../../providers/WorldMapProvider/WorldMapProvider";
+import { WorldMap } from "../../../../../App/reducers/mapReducer";
 
 // Responsibility
 // Transform coordinates from above to viewport coordinates
@@ -33,6 +28,7 @@ type Props = BaseComponentProps & {
   onMouseUp: CustomClickEventHandler;
   onDrag: CustomDragEventHandler;
   onWheel: WheelEventHandler;
+  map: WorldMap;
   visibleStations: Array<Station>;
   visibleGridLines: Array<StraightLine>;
   visibleLineSegments: Array<LineSegment>;
@@ -45,12 +41,13 @@ const WindowViewportInterpreter: FunctionComponent<Props> = ({
   onMouseUp,
   onDrag,
   onWheel,
+  map,
   visibleStations,
   visibleGridLines,
   visibleLineSegments,
   className,
 }) => {
-  const { stations } = useContext(WorldMapContext);
+  const { stations } = map;
 
   const getTranslatedClickEventHandler = (
     callback: CustomClickEventHandler

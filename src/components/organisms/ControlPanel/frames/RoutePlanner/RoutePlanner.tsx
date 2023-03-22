@@ -1,7 +1,7 @@
-import { FunctionComponent, useContext } from "react";
+import { FunctionComponent } from "react";
 import StationSelector from "../../../../molecules/StationSelector/StationSelector";
-import { SelectedStationsContext } from "../../../../providers/SelectedStationsProvider/SelectedStationsProvider";
-import { WorldMapContext } from "../../../../providers/WorldMapProvider/WorldMapProvider";
+import { useMapControlsContext } from "../../../MapControls/hooks/useMapControlsContext";
+import { createFrameGetter } from "../../ControlPanel";
 import getRoute from "./utils/getRoute";
 
 // TODO: could there be an abstraction here... a Planner component? this is similar to the segment creator
@@ -11,9 +11,12 @@ import getRoute from "./utils/getRoute";
 // if there are no line segments
 // if there are no possible paths between the two stations selected
 
-const RoutePlanner: FunctionComponent = () => {
-  const { selectedStationIds } = useContext(SelectedStationsContext);
-  const { stations, lineSegments } = useContext(WorldMapContext);
+export type RoutePlannerProps = {};
+
+const RoutePlanner: FunctionComponent<RoutePlannerProps> = ({}) => {
+  const { map, selectedStations } = useMapControlsContext();
+  const { stations, lineSegments } = map;
+  const { selectedStationIds } = selectedStations;
 
   // should the inability to select the same station twice be built into the station selecting context?
   // if we select the same station twice, show that we cannot calculate the route between the two points?
@@ -22,14 +25,14 @@ const RoutePlanner: FunctionComponent = () => {
     selectedStationIds.every((value) => value !== null) &&
     selectedStationIds[0] !== selectedStationIds[1];
 
-  // const route = canPlanRoute
-  //   ? getRoute(
-  //       stations[selectedStationIds[0] as number], // TODO: fix this typing
-  //       stations[selectedStationIds[1] as number],
-  //       stations,
-  //       lineSegments
-  //     )
-  //   : undefined;
+  const route = canPlanRoute
+    ? getRoute(
+        stations[selectedStationIds[0] as number], // TODO: fix this typing
+        stations[selectedStationIds[1] as number],
+        stations,
+        lineSegments
+      )
+    : undefined;
 
   // after calculating a route, we should change the mouse mode to exploration?
 
@@ -37,7 +40,7 @@ const RoutePlanner: FunctionComponent = () => {
   return (
     <>
       <StationSelector />
-      {/* {route && (
+      {route && (
         <ol>
           {route.map((step) => {
             return (
@@ -47,9 +50,12 @@ const RoutePlanner: FunctionComponent = () => {
             );
           })}
         </ol>
-      )} */}
+      )}
     </>
   );
 };
+
+export const createRoutePlannerGetter = (props: RoutePlannerProps) =>
+  createFrameGetter<RoutePlannerProps>(RoutePlanner, props);
 
 export default RoutePlanner;

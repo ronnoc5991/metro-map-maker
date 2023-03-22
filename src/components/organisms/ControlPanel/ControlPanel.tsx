@@ -1,24 +1,25 @@
-import { FunctionComponent, useContext } from "react";
+import { FunctionComponent } from "react";
 import clsx from "clsx";
 import { BaseComponentProps } from "../../../types/BaseComponentProps";
 import Button from "../../molecules/Button/Button";
-import { GlobalEventDispatchContext } from "../../providers/GlobalEventDispatchProvider/GlobalEventDispatchProvider";
-import { ControlPanelFrame } from "./types";
-import { ControlPanelStackContext } from "../../providers/ControlPanelStackProvider/contexts/ControlPanelStackContext";
+import {
+  ControlPanelStack,
+  ControlPanelStackDispatch,
+} from "./hooks/useControlPanelStack";
 import "./styles.scss";
+import { FrameGetter } from "./types";
 
-type Props = BaseComponentProps & {};
+type Props = BaseComponentProps & {
+  stack: ControlPanelStack;
+  stackDispatch: ControlPanelStackDispatch;
+};
 
-const ControlPanel: FunctionComponent<Props> = ({ className }) => {
-  const { size, topFrame } = useContext(ControlPanelStackContext);
-  const globalEventDispatch = useContext(GlobalEventDispatchContext);
-
-  const getContent = (frame: ControlPanelFrame) => {
-    const Component = frame.component as FunctionComponent;
-    const props = frame.props as typeof Component.propTypes; // TODO: figure out this typing ;/
-
-    return <Component {...props} />;
-  };
+const ControlPanel: FunctionComponent<Props> = ({
+  stack,
+  stackDispatch,
+  className,
+}) => {
+  const { size, topFrame } = stack;
 
   return (
     <div
@@ -28,21 +29,29 @@ const ControlPanel: FunctionComponent<Props> = ({ className }) => {
         <Button
           icon="back"
           title="Back"
-          onClick={() => globalEventDispatch({ type: "pop-frame-off-stack" })}
+          onClick={() => stackDispatch({ type: "pop" })}
           className="back-button"
         />
       )}
       <Button
         icon="close"
         title="Close"
-        onClick={() => {
-          globalEventDispatch({ type: "close-control-panel" });
-        }}
+        onClick={() => stackDispatch({ type: "clear" })}
         className="close-button"
       />
-      {topFrame && getContent(topFrame)}
+      {topFrame && topFrame()}
     </div>
   );
 };
+
+export function createFrameGetter<P = {}>(
+  frame: FunctionComponent<P>,
+  props: P
+): FrameGetter {
+  const Component = frame;
+
+  // TODO: fix this key hack
+  return () => <Component key="" {...props} />;
+}
 
 export default ControlPanel;

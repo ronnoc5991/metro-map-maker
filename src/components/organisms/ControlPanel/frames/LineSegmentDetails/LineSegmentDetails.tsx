@@ -1,10 +1,8 @@
-import { FunctionComponent, useContext } from "react";
-import clsx from "clsx";
-import { BaseComponentProps } from "../../../../../types/BaseComponentProps";
+import { FunctionComponent } from "react";
 import Button from "../../../../molecules/Button/Button";
 import LineSegment from "../../../../../classes/LineSegment";
-import { WorldMapContext } from "../../../../providers/WorldMapProvider/WorldMapProvider";
-import { GlobalEventDispatchContext } from "../../../../providers/GlobalEventDispatchProvider/GlobalEventDispatchProvider";
+import { createFrameGetter } from "../../ControlPanel";
+import { useMapControlsContext } from "../../../MapControls/hooks/useMapControlsContext";
 
 // Responsibilites
 // Display line segment stations
@@ -14,29 +12,28 @@ import { GlobalEventDispatchContext } from "../../../../providers/GlobalEventDis
 // - we should draw the segment's control points
 // - and we should allow for dragging them
 
-export type LineSegmentDetailsProps = BaseComponentProps & {
+export type LineSegmentDetailsProps = {
   id: LineSegment["id"];
 };
 
 const LineSegmentDetails: FunctionComponent<LineSegmentDetailsProps> = ({
   id,
-  className,
 }) => {
-  const { lineSegments, stations } = useContext(WorldMapContext);
-  const globalEventDispatch = useContext(GlobalEventDispatchContext);
+  const { map, dispatch } = useMapControlsContext();
+  const { lineSegments, stations } = map;
 
   const lineSegment = lineSegments[id];
 
   return (
-    <div className={clsx(className)}>
+    <>
       {lineSegment.stationIds.map((stationId) => {
         return (
           <Button
             key={stationId}
             onClick={() =>
-              globalEventDispatch({
+              dispatch({
                 type: "open-station-details",
-                id: stationId,
+                props: { id: stationId },
               })
             }
             label={stations[stationId].name}
@@ -48,14 +45,18 @@ const LineSegmentDetails: FunctionComponent<LineSegmentDetailsProps> = ({
         icon="delete"
         title="Delete Line Segment"
         onClick={() =>
-          globalEventDispatch({
+          dispatch({
             type: "delete-line-segment",
             id: lineSegment.id,
           })
         }
       />
-    </div>
+    </>
   );
 };
+
+export const createLineSegmentDetailsGetter = (
+  props: LineSegmentDetailsProps
+) => createFrameGetter<LineSegmentDetailsProps>(LineSegmentDetails, props);
 
 export default LineSegmentDetails;

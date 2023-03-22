@@ -1,16 +1,8 @@
-import {
-  FunctionComponent,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { FunctionComponent, useEffect, useRef, useState } from "react";
+import { tupleIndices } from "../../../App/reducers/selectedStationsReducer";
 import Input from "../../atoms/Input/Input";
+import { useMapControlsContext } from "../../organisms/MapControls/hooks/useMapControlsContext";
 import OptionsList from "../../organisms/OptionsList/OptionsList";
-import { GlobalEventDispatchContext } from "../../providers/GlobalEventDispatchProvider/GlobalEventDispatchProvider";
-import { SelectedStationsContext } from "../../providers/SelectedStationsProvider/SelectedStationsProvider";
-import { tupleIndices } from "../../providers/SelectedStationsProvider/types";
-import { WorldMapContext } from "../../providers/WorldMapProvider/WorldMapProvider";
 
 // add a swap button that changes the from to the to and vice versa
 // display it based on a prop (it does not make sense in the line segment creator, order of stations there does not matter)
@@ -23,11 +15,9 @@ import { WorldMapContext } from "../../providers/WorldMapProvider/WorldMapProvid
 // once both stations are selected, maybe we should enter exploration mouse mode?
 
 const StationSelector: FunctionComponent = () => {
-  const { stations } = useContext(WorldMapContext);
-  const globalEventDispatch = useContext(GlobalEventDispatchContext);
-  const { activeIndex, selectedStationIds } = useContext(
-    SelectedStationsContext
-  );
+  const { map, selectedStations, dispatch } = useMapControlsContext();
+  const { stations } = map;
+  const { selectedStationIds, activeIndex } = selectedStations;
 
   const startingStationInput = useRef<HTMLInputElement>(null);
   const destinationStationInput = useRef<HTMLInputElement>(null);
@@ -73,11 +63,11 @@ const StationSelector: FunctionComponent = () => {
                 return newNames as [string, string];
               });
               if (selectedStationIds[index] !== null)
-                globalEventDispatch({ type: "deselect-station", index });
+                dispatch({ type: "deselect-station", index });
             }}
             onFocus={() => {
-              globalEventDispatch({
-                type: "set-selected-stations-active-index",
+              dispatch({
+                type: "set-active-index",
                 index,
               });
             }}
@@ -96,7 +86,7 @@ const StationSelector: FunctionComponent = () => {
               newNames[activeIndex] = stations[id].name;
               return newNames as [string, string];
             });
-            globalEventDispatch({
+            dispatch({
               type: "select-station",
               id: stations[id].id,
             });

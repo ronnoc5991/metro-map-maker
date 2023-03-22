@@ -1,7 +1,7 @@
+import { WorldMap } from "../../../../../../App/reducers/mapReducer";
 import Line from "../../../../../../classes/Line";
 import Station from "../../../../../../classes/Station";
 import getEuclideanDistanceBetweenPoints from "../../../../../../utils/getEuclideanDistanceBetweenPoints";
-import { WorldMap } from "../../../../../providers/WorldMapProvider/types";
 
 // we can put this somewhere else later
 const lineChangePenalty = 10;

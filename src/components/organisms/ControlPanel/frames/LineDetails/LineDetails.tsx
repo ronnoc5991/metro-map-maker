@@ -1,24 +1,19 @@
-import { FunctionComponent, useContext } from "react";
-import clsx from "clsx";
-import { BaseComponentProps } from "../../../../../types/BaseComponentProps";
+import { FunctionComponent } from "react";
 import Line from "../../../../../classes/Line";
 import Button from "../../../../molecules/Button/Button";
 import Input from "../../../../atoms/Input/Input";
-import { WorldMapContext } from "../../../../providers/WorldMapProvider/WorldMapProvider";
-import { GlobalEventDispatchContext } from "../../../../providers/GlobalEventDispatchProvider/GlobalEventDispatchProvider";
 import Heading from "../../../../atoms/Heading/Heading";
 import LineSegment from "../../../../../classes/LineSegment";
+import { createFrameGetter } from "../../ControlPanel";
+import { useMapControlsContext } from "../../../MapControls/hooks/useMapControlsContext";
 
-export type LineDetailsProps = BaseComponentProps & {
+export type LineDetailsProps = {
   id: Line["id"];
 };
 
-const LineDetails: FunctionComponent<LineDetailsProps> = ({
-  id,
-  className,
-}) => {
-  const { stations, lines, lineSegments } = useContext(WorldMapContext);
-  const globalEventDispatch = useContext(GlobalEventDispatchContext);
+const LineDetails: FunctionComponent<LineDetailsProps> = ({ id }) => {
+  const { map, dispatch } = useMapControlsContext();
+  const { stations, lines, lineSegments } = map;
 
   const line = lines[id];
 
@@ -32,14 +27,14 @@ const LineDetails: FunctionComponent<LineDetailsProps> = ({
   };
 
   return (
-    <div className={clsx(className)}>
+    <>
       {line && (
         <>
           <Input
             type="text"
             value={line.name}
             onChange={(newName) =>
-              globalEventDispatch({
+              dispatch({
                 type: "update-line-name",
                 id: line.id,
                 newName,
@@ -54,9 +49,9 @@ const LineDetails: FunctionComponent<LineDetailsProps> = ({
                   <Button
                     label={getLineSegmentName(childSegmentId)}
                     onClick={() =>
-                      globalEventDispatch({
+                      dispatch({
                         type: "open-line-segment-details",
-                        id: childSegmentId,
+                        props: { id: childSegmentId },
                       })
                     }
                   />
@@ -67,9 +62,9 @@ const LineDetails: FunctionComponent<LineDetailsProps> = ({
               <Button
                 label="New Segment"
                 onClick={() =>
-                  globalEventDispatch({
-                    type: "enter-line-segment-creation-mode",
-                    parentLineId: id,
+                  dispatch({
+                    type: "open-line-segment-creator",
+                    props: { parentLineId: id },
                   })
                 }
               />
@@ -78,14 +73,15 @@ const LineDetails: FunctionComponent<LineDetailsProps> = ({
           <Button
             title={`Delete ${line.name}`}
             icon="delete"
-            onClick={() =>
-              globalEventDispatch({ type: "delete-line", id: line.id })
-            }
+            onClick={() => dispatch({ type: "delete-line", id: line.id })}
           />
         </>
       )}
-    </div>
+    </>
   );
 };
+
+export const createLineDetailsGetter = (props: LineDetailsProps) =>
+  createFrameGetter<LineDetailsProps>(LineDetails, props);
 
 export default LineDetails;

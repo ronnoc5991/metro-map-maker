@@ -1,18 +1,16 @@
-import { FunctionComponent, useContext } from "react";
-import clsx from "clsx";
-import { GlobalEventDispatchContext } from "../../../../providers/GlobalEventDispatchProvider/GlobalEventDispatchProvider";
-import { WorldMapContext } from "../../../../providers/WorldMapProvider/WorldMapProvider";
-import { BaseComponentProps } from "../../../../../types/BaseComponentProps";
 import Station from "../../../../../classes/Station";
 import Line from "../../../../../classes/Line";
 import { IconProps } from "../../../../atoms/Icon/Icon";
 import Heading from "../../../../atoms/Heading/Heading";
 import Button from "../../../../molecules/Button/Button";
-import "./styles.scss";
+import styles from "./styles.module.scss";
+import { createFrameGetter } from "../../ControlPanel";
+import { useMapControlsContext } from "../../../MapControls/hooks/useMapControlsContext";
+import { FunctionComponent } from "react";
 
 type Item = { name: string; id: Station["id"] | Line["id"] };
 
-type Props = BaseComponentProps & {
+type Props = {
   title: string;
   items: Record<string, Item>;
   itemIconName: IconProps["name"];
@@ -26,14 +24,13 @@ const ItemList = ({
   itemIconName,
   onItemSelect,
   onNewItemClick,
-  className,
 }: Props) => {
   return (
-    <div className={clsx("item-list", className)}>
+    <div className={styles["item-list"]}>
       <Heading as="h1" className="title">
         {title}
       </Heading>
-      <ul className="list">
+      <ul className={styles.list}>
         <li>
           <Button
             icon="plus"
@@ -57,50 +54,49 @@ const ItemList = ({
   );
 };
 
-export type StationsListProps = BaseComponentProps & {};
+export type StationsListProps = {};
 
-const StationsList: FunctionComponent = () => {
-  const { stations } = useContext(WorldMapContext);
-  const globalEventDispatch = useContext(GlobalEventDispatchContext);
+const StationsList: FunctionComponent<StationsListProps> = () => {
+  const { map, dispatch } = useMapControlsContext();
 
   return (
     <ItemList
       title="Stations"
-      items={stations}
+      items={map.stations}
       itemIconName="station"
       onItemSelect={(id: Station["id"]) =>
-        globalEventDispatch({
-          type: "open-station-details",
-          id,
-        })
+        dispatch({ type: "open-station-details", props: { id } })
       }
-      onNewItemClick={() =>
-        globalEventDispatch({ type: "enter-station-creation-mode" })
-      }
+      onNewItemClick={() => dispatch({ type: "enter-station-creation-mode" })}
     />
   );
 };
 
-export type LinesListProps = BaseComponentProps & {};
+export type LinesListProps = {};
 
 const LinesList: FunctionComponent<LinesListProps> = () => {
-  const { lines } = useContext(WorldMapContext);
-  const globalEventDispatch = useContext(GlobalEventDispatchContext);
+  const { map, dispatch } = useMapControlsContext();
 
   return (
     <ItemList
       title="Lines"
-      items={lines}
+      items={map.lines}
       itemIconName="line"
       onItemSelect={(id) =>
-        globalEventDispatch({
+        dispatch({
           type: "open-line-details",
-          id,
+          props: { id },
         })
       }
-      onNewItemClick={() => globalEventDispatch({ type: "create-line" })}
+      onNewItemClick={() => dispatch({ type: "create-line" })}
     />
   );
 };
+
+export const createStationsListGetter = (props: StationsListProps) =>
+  createFrameGetter<StationsListProps>(StationsList, props);
+
+export const createLinesListGetter = (props: LinesListProps) =>
+  createFrameGetter<LinesListProps>(LinesList, props);
 
 export { StationsList, LinesList };

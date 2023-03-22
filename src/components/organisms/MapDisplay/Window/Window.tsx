@@ -1,7 +1,6 @@
 import {
   FunctionComponent,
   useCallback,
-  useContext,
   useEffect,
   useRef,
   useState,
@@ -18,12 +17,13 @@ import getVisibleGridLines from "./utils/getVisibleGridLines";
 import getVisibleStations from "./utils/getVisibleStations";
 import isZoomAllowed from "./utils/isZoomAllowed";
 import WindowViewportInterpreter from "./WindowViewportInterpreter/WindowViewportInterpreter";
-import { WorldMapContext } from "../../../providers/WorldMapProvider/WorldMapProvider";
 import ButtonList from "../../ButtonList/ButtonList";
 import config from "./config/config";
+import { WorldMap } from "../../../../App/reducers/mapReducer";
 import "./styles.scss";
 
 type WindowProps = BaseComponentProps & {
+  map: WorldMap;
   isDraggable: boolean;
   viewportDimensions: Dimensions;
   onMouseDown: CustomClickEventHandler;
@@ -32,6 +32,7 @@ type WindowProps = BaseComponentProps & {
 };
 
 const Window: FunctionComponent<WindowProps> = ({
+  map,
   isDraggable,
   viewportDimensions,
   onMouseDown,
@@ -47,7 +48,7 @@ const Window: FunctionComponent<WindowProps> = ({
     maxY: 0 + viewportDimensions.height / 2,
   });
   const hasBeenDragged = useRef(false);
-  const { stations, lineSegments } = useContext(WorldMapContext);
+  const { stations, lineSegments } = map;
 
   const resizeBounds = useCallback(
     (horizontalFactor: number = 0.5, verticalFactor: number = 0.5) => {
@@ -158,6 +159,7 @@ const Window: FunctionComponent<WindowProps> = ({
         onMouseUp={onMouseUpProxy}
         onDrag={onDragProxy}
         onWheel={onZoom}
+        map={map}
         visibleStations={getVisibleStations(stations, bounds)}
         visibleGridLines={getVisibleGridLines(bounds)}
         visibleLineSegments={getVisibileLineSegments(

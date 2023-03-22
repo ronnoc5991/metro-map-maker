@@ -1,5 +1,5 @@
+import { WorldMap } from "../App/reducers/mapReducer";
 import Station from "../classes/Station";
-import { WorldMap } from "../components/providers/WorldMapProvider/types";
 import { Position } from "../types/Position";
 
 const getClickedStation = (

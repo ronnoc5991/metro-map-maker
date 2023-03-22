@@ -1,6 +1,6 @@
+import { WorldMap } from "../../../../../App/reducers/mapReducer";
 import LineSegment from "../../../../../classes/LineSegment";
 import { WindowBounds } from "../../../../../types/WindowBounds";
-import { WorldMap } from "../../../../providers/WorldMapProvider/types";
 
 const getVisibileLineSegments = (
   lineSegments: WorldMap["lineSegments"],

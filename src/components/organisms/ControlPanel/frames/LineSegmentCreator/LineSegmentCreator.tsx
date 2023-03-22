@@ -1,35 +1,32 @@
-import { FunctionComponent, useContext } from "react";
-import clsx from "clsx";
+import { FunctionComponent } from "react";
 import Line from "../../../../../classes/Line";
-import { BaseComponentProps } from "../../../../../types/BaseComponentProps";
-import { GlobalEventDispatchContext } from "../../../../providers/GlobalEventDispatchProvider/GlobalEventDispatchProvider";
-import { SelectedStationsContext } from "../../../../providers/SelectedStationsProvider/SelectedStationsProvider";
 import StationSelector from "../../../../molecules/StationSelector/StationSelector";
 import Button from "../../../../molecules/Button/Button";
+import { createFrameGetter } from "../../ControlPanel";
+import { useMapControlsContext } from "../../../MapControls/hooks/useMapControlsContext";
 
-export type LineSegmentCreatorProps = BaseComponentProps & {
+export type LineSegmentCreatorProps = {
   parentLineId: Line["id"];
 };
 
 const LineSegmentCreator: FunctionComponent<LineSegmentCreatorProps> = ({
   parentLineId,
-  className,
 }) => {
-  const { selectedStationIds } = useContext(SelectedStationsContext);
-  const globalEventDispatch = useContext(GlobalEventDispatchContext);
+  const { selectedStations, dispatch } = useMapControlsContext();
+  const { selectedStationIds } = selectedStations;
 
   const canCreateLineSegment = selectedStationIds.every(
     (value) => value !== null
   );
 
   return (
-    <div className={clsx(className)}>
+    <>
       <StationSelector />
       {canCreateLineSegment && (
         <Button
           label="Save"
           onClick={() => {
-            globalEventDispatch({
+            dispatch({
               type: "create-line-segment",
               stationIds: selectedStationIds as [number, number],
               parentLineId: parentLineId,
@@ -37,8 +34,12 @@ const LineSegmentCreator: FunctionComponent<LineSegmentCreatorProps> = ({
           }}
         />
       )}
-    </div>
+    </>
   );
 };
+
+export const createLineSegmentCreatorGetter = (
+  props: LineSegmentCreatorProps
+) => createFrameGetter<LineSegmentCreatorProps>(LineSegmentCreator, props);
 
 export default LineSegmentCreator;

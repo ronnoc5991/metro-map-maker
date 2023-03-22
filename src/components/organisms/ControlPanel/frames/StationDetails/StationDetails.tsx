@@ -1,47 +1,39 @@
-import { FunctionComponent, useContext } from "react";
-import clsx from "clsx";
-import { GlobalEventDispatchContext } from "../../../../providers/GlobalEventDispatchProvider/GlobalEventDispatchProvider";
-import { WorldMapContext } from "../../../../providers/WorldMapProvider/WorldMapProvider";
-import { BaseComponentProps } from "../../../../../types/BaseComponentProps";
+import { FunctionComponent } from "react";
 import Line from "../../../../../classes/Line";
 import Station from "../../../../../classes/Station";
 import Button from "../../../../molecules/Button/Button";
 import Input from "../../../../atoms/Input/Input";
-import "./styles.scss";
 import Heading from "../../../../atoms/Heading/Heading";
+import styles from "./styles.module.scss";
+import { createFrameGetter } from "../../ControlPanel";
+import { useMapControlsContext } from "../../../MapControls/hooks/useMapControlsContext";
 
-export type StationDetailsProps = BaseComponentProps & {
+export type StationDetailsProps = {
   id: Station["id"];
 };
 
-const StationDetails: FunctionComponent<StationDetailsProps> = ({
-  id,
-  className,
-}) => {
-  const { stations, lineSegments, lines } = useContext(WorldMapContext);
-  const globalEventDispatch = useContext(GlobalEventDispatchContext);
+const StationDetails: FunctionComponent<StationDetailsProps> = ({ id }) => {
+  const { map, dispatch } = useMapControlsContext();
+  const { stations, lineSegments, lines } = map;
 
   const station = stations[id];
 
-  // const parentLines = new Set<Line>();
+  const parentLines = new Set<Line>();
 
-  // station.connectedLineSegmentIds.forEach((lineSegmentId) => {
-  //   const lineSegment = lineSegments[lineSegmentId];
+  station.connectedLineSegmentIds.forEach((lineSegmentId) => {
+    const lineSegment = lineSegments[lineSegmentId];
 
-  //   lineSegment.parentLineId.forEach((parentLineId) => {
-  //     const parentLine = lines[parentLineId];
-
-  //     parentLines.add(parentLine);
-  //   });
-  // });
+    const parentLine = lines[lineSegment.parentLineId];
+    parentLines.add(parentLine);
+  });
 
   return (
-    <div className={clsx("StationDetails", className)}>
+    <div className={styles["station-details"]}>
       <Input
         type="text"
         value={station.name}
         onChange={(newName) =>
-          globalEventDispatch({
+          dispatch({
             type: "update-station-name",
             id: station.id,
             newName,
@@ -52,11 +44,9 @@ const StationDetails: FunctionComponent<StationDetailsProps> = ({
         icon="delete"
         title={`Delete ${station.name}`}
         className="delete-button"
-        onClick={() =>
-          globalEventDispatch({ type: "delete-station", id: station.id })
-        }
+        onClick={() => dispatch({ type: "delete-station", id: station.id })}
       />
-      {/* {parentLines.size > 0 && (
+      {parentLines.size > 0 && (
         <>
           <Heading as="h2" size="medium">
             {station.name} sits on lines:
@@ -69,9 +59,9 @@ const StationDetails: FunctionComponent<StationDetailsProps> = ({
                     label={parentLine.name}
                     icon="line"
                     onClick={() =>
-                      globalEventDispatch({
+                      dispatch({
                         type: "open-line-details",
-                        id: parentLine.id,
+                        props: { id: parentLine.id },
                       })
                     }
                   />
@@ -80,9 +70,12 @@ const StationDetails: FunctionComponent<StationDetailsProps> = ({
             })}
           </ul>
         </>
-      )} */}
+      )}
     </div>
   );
 };
+
+export const createStationDetailsGetter = (props: StationDetailsProps) =>
+  createFrameGetter<StationDetailsProps>(StationDetails, props);
 
 export default StationDetails;
