@@ -4,7 +4,7 @@ import { CustomClickEventHandler } from "../../../types/CustomClickEventHandler"
 import { CustomDragEventHandler } from "../../../types/CustomDragEventHandler";
 import { Dimensions } from "../../../types/Dimensions";
 import { Position } from "../../../types/Position";
-import Window from "./Window/Window";
+import Window from "../Window/Window";
 
 // window should ALMOST always be draggable, unless we are dragging an edge control point for example
 // include controls here that manipulate the window? (zoom)

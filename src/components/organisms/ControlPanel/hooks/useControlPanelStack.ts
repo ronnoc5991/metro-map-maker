@@ -5,27 +5,27 @@ import {
   createStationsListGetter,
   LinesListProps,
   StationsListProps,
-} from "../frames/ItemList/ItemList";
+} from "../../ItemList/ItemList";
 import {
   createLineDetailsGetter,
   LineDetailsProps,
-} from "../frames/LineDetails/LineDetails";
+} from "../../LineDetails/LineDetails";
 import {
   createLineSegmentCreatorGetter,
   LineSegmentCreatorProps,
-} from "../frames/LineSegmentCreator/LineSegmentCreator";
+} from "../../LineSegmentCreator/LineSegmentCreator";
 import {
   createLineSegmentDetailsGetter,
   LineSegmentDetailsProps,
-} from "../frames/LineSegmentDetails/LineSegmentDetails";
+} from "../../LineSegmentDetails/LineSegmentDetails";
 import {
   createRoutePlannerGetter,
   RoutePlannerProps,
-} from "../frames/RoutePlanner/RoutePlanner";
+} from "../../RoutePlanner/RoutePlanner";
 import {
   createStationDetailsGetter,
   StationDetailsProps,
-} from "../frames/StationDetails/StationDetails";
+} from "../../StationDetails/StationDetails";
 import { FrameGetter } from "../types";
 
 export type ControlPanelStack = Stack<FrameGetter>;
