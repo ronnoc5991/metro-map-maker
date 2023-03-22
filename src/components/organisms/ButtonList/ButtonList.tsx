@@ -13,7 +13,7 @@ const ButtonList: FunctionComponent<Props> = ({ buttonProps, className }) => {
     <ul className={clsx(styles["button-list"], className)}>
       {buttonProps.map((props, index) => {
         return (
-          <li key={index} className="child">
+          <li key={index} className={styles.child}>
             <Button {...props} />
           </li>
         );

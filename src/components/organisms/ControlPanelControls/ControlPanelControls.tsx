@@ -24,7 +24,7 @@ const ControlPanelControls: FunctionComponent<Props> = ({ className }) => {
           onClick: () => dispatch({ type: "open-lines-list", props: {} }),
         },
         {
-          icon: "line-segment",
+          icon: "directions",
           title: "Open Route Planner",
           onClick: () => dispatch({ type: "open-route-planner", props: {} }),
         },

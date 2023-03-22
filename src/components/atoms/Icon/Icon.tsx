@@ -7,6 +7,7 @@ import { ReactComponent as Minus } from "./svgs/minus.svg";
 import { ReactComponent as Close } from "./svgs/close.svg";
 import { ReactComponent as Back } from "./svgs/back.svg";
 import { ReactComponent as Delete } from "./svgs/delete.svg";
+import { ReactComponent as Directions } from "./svgs/directions.svg";
 import { BaseComponentProps } from "../../../types/BaseComponentProps";
 import clsx from "clsx";
 
@@ -18,7 +19,8 @@ type Name =
   | "minus"
   | "close"
   | "back"
-  | "delete";
+  | "delete"
+  | "directions";
 
 export type IconProps = BaseComponentProps & {
   name: Name;
@@ -42,6 +44,8 @@ const getComponent = (name: Name) => {
       return Back;
     case "delete":
       return Delete;
+    case "directions":
+      return Directions;
   }
 };
 
