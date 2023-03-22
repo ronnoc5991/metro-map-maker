@@ -1,13 +1,12 @@
 .item-list {
+  --footer-height: 72px;
+
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   height: 100%;
-
-  .title {
-    // TODO: css var here
-    margin-bottom: 20px;
-  }
+  row-gap: 20px;
 
   .list {
     margin: unset;
@@ -16,5 +15,21 @@
     // TODO: figure out an appealing scroll behavior
     overflow-y: scroll;
     width: 100%;
+  }
+
+  .footer {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: var(--footer-height);
+    border-top: 1px solid #aaaaaa;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .new-item-button {
+    border: 2px solid blue;
   }
 }

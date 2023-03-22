@@ -13,6 +13,7 @@ type Item = { name: string; id: Station["id"] | Line["id"] };
 type Props = {
   title: string;
   items: Record<string, Item>;
+  itemName: string;
   itemIconName: IconProps["name"];
   onItemSelect: (id: Item["id"]) => void;
   onNewItemClick: () => void;
@@ -21,23 +22,15 @@ type Props = {
 const ItemList = ({
   title,
   items,
+  itemName,
   itemIconName,
   onItemSelect,
   onNewItemClick,
 }: Props) => {
   return (
     <div className={styles["item-list"]}>
-      <Heading as="h1" className="title">
-        {title}
-      </Heading>
+      <Heading as="h1">{title}</Heading>
       <ul className={styles.list}>
-        <li>
-          <Button
-            icon="plus"
-            label="Create New Item"
-            onClick={onNewItemClick}
-          />
-        </li>
         {Object.values(items).map((item) => {
           return (
             <li key={item.id}>
@@ -50,6 +43,14 @@ const ItemList = ({
           );
         })}
       </ul>
+      <footer className={styles.footer}>
+        <Button
+          className={styles["new-item-button"]}
+          icon={itemIconName}
+          label={`Create a new ${itemName}`}
+          onClick={onNewItemClick}
+        />
+      </footer>
     </div>
   );
 };
@@ -63,6 +64,7 @@ const StationsList: FunctionComponent<StationsListProps> = () => {
     <ItemList
       title="Stations"
       items={map.stations}
+      itemName="Station"
       itemIconName="station"
       onItemSelect={(id: Station["id"]) =>
         dispatch({ type: "open-station-details", props: { id } })
@@ -81,6 +83,7 @@ const LinesList: FunctionComponent<LinesListProps> = () => {
     <ItemList
       title="Lines"
       items={map.lines}
+      itemName="Line"
       itemIconName="line"
       onItemSelect={(id) =>
         dispatch({
