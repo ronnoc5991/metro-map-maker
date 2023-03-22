@@ -1,0 +1,12 @@
+.button {
+  cursor: pointer;
+  border: 1px solid var(--color-white);
+  outline: 1px solid var(--color-black);
+  border-radius: 50%;
+  height: 30px;
+  width: 30px;
+
+  .input {
+    visibility: hidden;
+  }
+}

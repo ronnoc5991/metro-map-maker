@@ -6,6 +6,7 @@ import Heading from "../../../../atoms/Heading/Heading";
 import LineSegment from "../../../../../classes/LineSegment";
 import { createFrameGetter } from "../../ControlPanel";
 import { useMapControlsContext } from "../../../MapControls/hooks/useMapControlsContext";
+import ColorPicker from "../../../../molecules/ColorPicker/ColorPicker";
 
 export type LineDetailsProps = {
   id: Line["id"];
@@ -40,6 +41,12 @@ const LineDetails: FunctionComponent<LineDetailsProps> = ({ id }) => {
                 newName,
               })
             }
+          />
+          <ColorPicker
+            value={line.color}
+            onChange={(newColor) => {
+              dispatch({ type: "update-line-color", id: line.id, newColor });
+            }}
           />
           <Heading as="h2">Segments</Heading>
           <ul>

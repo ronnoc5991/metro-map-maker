@@ -59,7 +59,8 @@ const MapControls: FunctionComponent<Props> = ({
       }
       case "update-station-name":
       case "create-line":
-      case "update-line-name": {
+      case "update-line-name":
+      case "update-line-color": {
         mapDispatch(action);
         break;
       }

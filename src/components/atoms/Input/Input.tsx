@@ -3,7 +3,7 @@ import { FocusEventHandler, forwardRef, HTMLInputTypeAttribute } from "react";
 import { BaseComponentProps } from "../../../types/BaseComponentProps";
 import styles from "./styles.module.scss";
 
-type Props = BaseComponentProps & {
+export type InputProps = BaseComponentProps & {
   type: HTMLInputTypeAttribute;
   value: string;
   onChange: (newValue: string) => void;
@@ -11,7 +11,7 @@ type Props = BaseComponentProps & {
   onBlur?: FocusEventHandler;
 };
 
-const Input = forwardRef<HTMLInputElement, Props>(
+const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ type, value, onChange, onFocus, onBlur, className }, ref) => {
     return (
       <input

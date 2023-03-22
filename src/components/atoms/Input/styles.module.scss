@@ -1,7 +1,14 @@
 .input {
-  all: unset;
+  border: unset;
+  background: unset;
+  font-size: unset;
+  font-family: unset;
+  outline: unset;
   text-align: center;
   width: 100%;
   line-height: 2;
-  border-bottom: 1px solid #aaaaaa;
+
+  &[type="text"] {
+    border-bottom: 1px solid #aaaaaa;
+  }
 }

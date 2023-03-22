@@ -35,6 +35,11 @@ export type WorldMapAction =
       newName: string;
     }
   | {
+      type: "update-line-color";
+      id: Line["id"];
+      newColor: string;
+    }
+  | {
       type: "delete-station";
       id: Station["id"];
     }
@@ -142,6 +147,15 @@ const worldMapReducer: Reducer<WorldMap, WorldMapAction> = (
     case "update-line-name": {
       const newLine = { ...worldMap.lines[action.id] };
       newLine.name = action.newName;
+
+      return {
+        ...worldMap,
+        lines: { ...worldMap.lines, [action.id]: newLine },
+      };
+    }
+    case "update-line-color": {
+      const newLine = { ...worldMap.lines[action.id] };
+      newLine.color = action.newColor;
 
       return {
         ...worldMap,
