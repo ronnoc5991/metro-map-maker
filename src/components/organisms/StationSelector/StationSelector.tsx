@@ -1,8 +1,8 @@
 import { FunctionComponent, useEffect, useRef, useState } from "react";
 import { tupleIndices } from "../../../App/reducers/selectedStationsReducer";
 import Input from "../../atoms/Input/Input";
-import { useMapControlsContext } from "../../organisms/MapControls/hooks/useMapControlsContext";
-import OptionsList from "../../organisms/OptionsList/OptionsList";
+import { useMapControlsContext } from "../MapControls/hooks/useMapControlsContext";
+import OptionsList from "../OptionsList/OptionsList";
 
 // add a swap button that changes the from to the to and vice versa
 // display it based on a prop (it does not make sense in the line segment creator, order of stations there does not matter)

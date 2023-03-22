@@ -1,6 +1,6 @@
 import { FunctionComponent } from "react";
 import Line from "../../../../../classes/Line";
-import StationSelector from "../../../../molecules/StationSelector/StationSelector";
+import StationSelector from "../../../StationSelector/StationSelector";
 import Button from "../../../../molecules/Button/Button";
 import { createFrameGetter } from "../../ControlPanel";
 import { useMapControlsContext } from "../../../MapControls/hooks/useMapControlsContext";

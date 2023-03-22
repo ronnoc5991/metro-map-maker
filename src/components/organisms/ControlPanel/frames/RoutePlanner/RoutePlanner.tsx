@@ -1,5 +1,5 @@
 import { FunctionComponent } from "react";
-import StationSelector from "../../../../molecules/StationSelector/StationSelector";
+import StationSelector from "../../../StationSelector/StationSelector";
 import { useMapControlsContext } from "../../../MapControls/hooks/useMapControlsContext";
 import { createFrameGetter } from "../../ControlPanel";
 import getRoute from "./utils/getRoute";
