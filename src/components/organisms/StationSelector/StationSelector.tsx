@@ -74,8 +74,9 @@ const StationSelector: FunctionComponent = () => {
           />
         );
       })}
-      {searchResults && (
+      {searchResults.length > 0 && (
         <OptionsList
+          title="Suggestions"
           iconName="station"
           options={searchResults}
           onSelect={(id) => {
