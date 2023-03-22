@@ -6,4 +6,5 @@ export type BezierCurve = {
   controlPointTwo: Position;
   end: Position;
   width: number;
+  color: string;
 };

@@ -1,8 +1,10 @@
 import { FunctionComponent } from "react";
 import Button from "../../../../molecules/Button/Button";
+import Text from "../../../../atoms/Text/Text";
 import LineSegment from "../../../../../classes/LineSegment";
 import { createFrameGetter } from "../../ControlPanel";
 import { useMapControlsContext } from "../../../MapControls/hooks/useMapControlsContext";
+import Icon from "../../../../atoms/Icon/Icon";
 
 // Responsibilites
 // Display line segment stations
@@ -36,13 +38,13 @@ const LineSegmentDetails: FunctionComponent<LineSegmentDetailsProps> = ({
                 props: { id: stationId },
               })
             }
-            label={stations[stationId].name}
-          />
+          >
+            <Text as="span">{stations[stationId].name}</Text>
+          </Button>
         );
       })}
 
       <Button
-        icon="delete"
         title="Delete Line Segment"
         onClick={() =>
           dispatch({
@@ -50,7 +52,9 @@ const LineSegmentDetails: FunctionComponent<LineSegmentDetailsProps> = ({
             id: lineSegment.id,
           })
         }
-      />
+      >
+        <Icon name="delete" />
+      </Button>
     </>
   );
 };

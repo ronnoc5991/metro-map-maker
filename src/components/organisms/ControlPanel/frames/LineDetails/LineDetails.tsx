@@ -7,6 +7,9 @@ import LineSegment from "../../../../../classes/LineSegment";
 import { createFrameGetter } from "../../ControlPanel";
 import { useMapControlsContext } from "../../../MapControls/hooks/useMapControlsContext";
 import ColorPicker from "../../../../molecules/ColorPicker/ColorPicker";
+import Icon from "../../../../atoms/Icon/Icon";
+import IconWithLabel from "../../../../molecules/IconWithLabel/IconWithLabel";
+import OptionsList from "../../../OptionsList/OptionsList";
 
 export type LineDetailsProps = {
   id: Line["id"];
@@ -48,40 +51,41 @@ const LineDetails: FunctionComponent<LineDetailsProps> = ({ id }) => {
               dispatch({ type: "update-line-color", id: line.id, newColor });
             }}
           />
-          <Heading as="h2">Segments</Heading>
-          <ul>
-            {line.segmentIds.map((childSegmentId) => {
-              return (
-                <li key={childSegmentId}>
-                  <Button
-                    label={getLineSegmentName(childSegmentId)}
-                    onClick={() =>
-                      dispatch({
-                        type: "open-line-segment-details",
-                        props: { id: childSegmentId },
-                      })
-                    }
-                  />
-                </li>
-              );
-            })}
-            <li>
-              <Button
-                label="New Segment"
-                onClick={() =>
-                  dispatch({
-                    type: "open-line-segment-creator",
-                    props: { parentLineId: id },
-                  })
-                }
-              />
-            </li>
-          </ul>
+          <OptionsList
+            title="This line is made up of the following segments:"
+            iconName="line-segment"
+            onSelect={(id) => {
+              dispatch({
+                type: "open-line-segment-details",
+                props: { id },
+              });
+            }}
+            options={line.segmentIds.map((childSegmentId) => ({
+              id: childSegmentId,
+              name: getLineSegmentName(childSegmentId),
+              color: line.color,
+            }))}
+          />
+
+          <Button
+            onClick={() =>
+              dispatch({
+                type: "open-line-segment-creator",
+                props: { parentLineId: id },
+              })
+            }
+          >
+            <IconWithLabel
+              iconName="line-segment"
+              label="Create a new Line Segment"
+            />
+          </Button>
           <Button
             title={`Delete ${line.name}`}
-            icon="delete"
             onClick={() => dispatch({ type: "delete-line", id: line.id })}
-          />
+          >
+            <Icon name="delete" />
+          </Button>
         </>
       )}
     </>

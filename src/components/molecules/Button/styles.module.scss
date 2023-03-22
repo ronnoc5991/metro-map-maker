@@ -3,14 +3,10 @@
   font-family: unset;
   outline: unset;
   border: unset;
+  padding: unset;
+
   display: flex;
   align-items: center;
+  width: 100%;
   cursor: pointer;
-  height: 30px;
-  padding: 3px;
-  gap: 24px;
-
-  .label {
-    white-space: nowrap;
-  }
 }

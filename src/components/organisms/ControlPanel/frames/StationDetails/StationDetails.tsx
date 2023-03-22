@@ -1,12 +1,13 @@
 import { FunctionComponent } from "react";
 import Line from "../../../../../classes/Line";
 import Station from "../../../../../classes/Station";
-import Button from "../../../../molecules/Button/Button";
+import Icon from "../../../../atoms/Icon/Icon";
 import Input from "../../../../atoms/Input/Input";
-import Heading from "../../../../atoms/Heading/Heading";
-import styles from "./styles.module.scss";
+import Button from "../../../../molecules/Button/Button";
 import { createFrameGetter } from "../../ControlPanel";
+import OptionsList from "../../../OptionsList/OptionsList";
 import { useMapControlsContext } from "../../../MapControls/hooks/useMapControlsContext";
+import styles from "./styles.module.scss";
 
 export type StationDetailsProps = {
   id: Station["id"];
@@ -41,35 +42,24 @@ const StationDetails: FunctionComponent<StationDetailsProps> = ({ id }) => {
         }
       />
       <Button
-        icon="delete"
         title={`Delete ${station.name}`}
-        className="delete-button"
+        className={styles["delete-button"]}
         onClick={() => dispatch({ type: "delete-station", id: station.id })}
-      />
+      >
+        <Icon name="delete" />
+      </Button>
       {parentLines.size > 0 && (
-        <>
-          <Heading as="h2" size="medium">
-            {station.name} sits on lines:
-          </Heading>
-          <ul>
-            {[...parentLines].map((parentLine) => {
-              return (
-                <li key={`parent-line-${parentLine.id}`}>
-                  <Button
-                    label={parentLine.name}
-                    icon="line"
-                    onClick={() =>
-                      dispatch({
-                        type: "open-line-details",
-                        props: { id: parentLine.id },
-                      })
-                    }
-                  />
-                </li>
-              );
-            })}
-          </ul>
-        </>
+        <OptionsList
+          title={`${station.name} sits on the following lines:`}
+          iconName="line"
+          onSelect={(id) =>
+            dispatch({
+              type: "open-line-details",
+              props: { id },
+            })
+          }
+          options={[...parentLines]}
+        />
       )}
     </div>
   );

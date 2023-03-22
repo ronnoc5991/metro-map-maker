@@ -76,10 +76,8 @@ const StationSelector: FunctionComponent = () => {
       })}
       {searchResults && (
         <OptionsList
-          options={searchResults.map((station) => ({
-            id: station.id,
-            label: station.name,
-          }))}
+          iconName="station"
+          options={searchResults}
           onSelect={(id) => {
             setDisplayedStationNames((prev) => {
               const newNames = [...prev];

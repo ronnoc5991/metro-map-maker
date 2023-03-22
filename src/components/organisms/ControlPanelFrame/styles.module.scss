@@ -1,0 +1,31 @@
+.control-panel-frame {
+  --footer-height: 72px;
+
+  border: 1px solid red;
+  position: relative;
+  height: 100%;
+}
+
+.header,
+.footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid red;
+}
+
+.body {
+  height: calc(100% - var(--footer-height));
+  overflow-y: scroll;
+  border: 1px solid blue;
+}
+
+.footer {
+  box-shadow: var(--default-box-shadow);
+  height: var(--footer-height);
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  padding: 0 var(--horizontal-spacing);
+}

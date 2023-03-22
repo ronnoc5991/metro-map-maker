@@ -3,12 +3,14 @@ import Line from "../../../../../classes/Line";
 import { IconProps } from "../../../../atoms/Icon/Icon";
 import Heading from "../../../../atoms/Heading/Heading";
 import Button from "../../../../molecules/Button/Button";
-import styles from "./styles.module.scss";
 import { createFrameGetter } from "../../ControlPanel";
 import { useMapControlsContext } from "../../../MapControls/hooks/useMapControlsContext";
 import { FunctionComponent } from "react";
+import IconWithLabel from "../../../../molecules/IconWithLabel/IconWithLabel";
+import OptionsList from "../../../OptionsList/OptionsList";
+import ControlPanelFrame from "../../../ControlPanelFrame/ControlPanelFrame";
 
-type Item = { name: string; id: Station["id"] | Line["id"] };
+type Item = { name: string; id: Station["id"] | Line["id"]; color?: string };
 
 type Props = {
   title: string;
@@ -28,30 +30,24 @@ const ItemList = ({
   onNewItemClick,
 }: Props) => {
   return (
-    <div className={styles["item-list"]}>
-      <Heading as="h1">{title}</Heading>
-      <ul className={styles.list}>
-        {Object.values(items).map((item) => {
-          return (
-            <li key={item.id}>
-              <Button
-                icon={itemIconName}
-                onClick={() => onItemSelect(item.id)}
-                label={item.name}
-              />
-            </li>
-          );
-        })}
-      </ul>
-      <footer className={styles.footer}>
-        <Button
-          className={styles["new-item-button"]}
-          icon={itemIconName}
-          label={`Create a new ${itemName}`}
-          onClick={onNewItemClick}
+    <ControlPanelFrame
+      headerContent={<Heading as="h1">{title}</Heading>}
+      bodyContent={
+        <OptionsList
+          iconName={itemIconName}
+          onSelect={onItemSelect}
+          options={Object.values(items)}
         />
-      </footer>
-    </div>
+      }
+      footerContent={
+        <Button onClick={onNewItemClick}>
+          <IconWithLabel
+            iconName={itemIconName}
+            label={`Create a new ${itemName}`}
+          />
+        </Button>
+      }
+    />
   );
 };
 

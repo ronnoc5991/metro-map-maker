@@ -4,6 +4,7 @@ import StationSelector from "../../../../molecules/StationSelector/StationSelect
 import Button from "../../../../molecules/Button/Button";
 import { createFrameGetter } from "../../ControlPanel";
 import { useMapControlsContext } from "../../../MapControls/hooks/useMapControlsContext";
+import Text from "../../../../atoms/Text/Text";
 
 export type LineSegmentCreatorProps = {
   parentLineId: Line["id"];
@@ -24,7 +25,6 @@ const LineSegmentCreator: FunctionComponent<LineSegmentCreatorProps> = ({
       <StationSelector />
       {canCreateLineSegment && (
         <Button
-          label="Save"
           onClick={() => {
             dispatch({
               type: "create-line-segment",
@@ -32,7 +32,9 @@ const LineSegmentCreator: FunctionComponent<LineSegmentCreatorProps> = ({
               parentLineId: parentLineId,
             });
           }}
-        />
+        >
+          <Text as="span">Save</Text>
+        </Button>
       )}
     </>
   );

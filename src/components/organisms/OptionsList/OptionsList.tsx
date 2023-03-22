@@ -1,26 +1,47 @@
 import { FunctionComponent } from "react";
+import Heading from "../../atoms/Heading/Heading";
 import Button from "../../molecules/Button/Button";
+import IconWithLabel, {
+  IconWithLabelProps,
+} from "../../molecules/IconWithLabel/IconWithLabel";
+import styles from "./styles.module.scss";
 
-type Props = {
-  options: Array<{ id: number; label: string }>;
+type Props = Omit<IconWithLabelProps, "label" | "iconColor"> & {
+  title?: string;
+  options: Array<{ id: number; name: string; color?: string }>;
   onSelect: (id: number) => void;
 };
 
-// TODO: pass an optional label to the options list?
-
-const OptionsList: FunctionComponent<Props> = ({ options, onSelect }) => {
+const OptionsList: FunctionComponent<Props> = ({
+  title,
+  iconName,
+  options,
+  onSelect,
+}) => {
   return (
-    <ul>
-      {options.map((option) => (
-        <li key={option.id}>
-          <Button
-            label={option.label}
-            title={`Select ${option.label}`}
-            onClick={() => onSelect(option.id)}
-          />
-        </li>
-      ))}
-    </ul>
+    <>
+      {title && (
+        <Heading as="h2" className={styles.title}>
+          {title}
+        </Heading>
+      )}
+      <ul className={styles.list}>
+        {options.map((option) => (
+          <li key={option.id} className={styles["list-item"]}>
+            <Button
+              title={`Select ${option.name}`}
+              onClick={() => onSelect(option.id)}
+            >
+              <IconWithLabel
+                iconName={iconName}
+                iconColor={option.color}
+                label={option.name}
+              />
+            </Button>
+          </li>
+        ))}
+      </ul>
+    </>
   );
 };
 

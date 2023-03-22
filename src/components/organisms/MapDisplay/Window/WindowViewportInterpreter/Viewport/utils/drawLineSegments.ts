@@ -12,9 +12,11 @@ const drawLineSegments = (
 };
 
 function drawBezierCurve(
-  { start, controlPointOne, controlPointTwo, end, width }: BezierCurve,
+  { start, controlPointOne, controlPointTwo, end, width, color }: BezierCurve,
   context: CanvasRenderingContext2D
 ): void {
+  context.save();
+  context.strokeStyle = color;
   context.beginPath();
   context.moveTo(start.x, start.y);
   context.lineWidth = width; // separate the coordinates from the width/presentation of the lines... this should not be called in a forEach loop above
@@ -27,6 +29,7 @@ function drawBezierCurve(
     end.y
   );
   context.stroke();
+  context.restore();
 }
 
 export default drawLineSegments;

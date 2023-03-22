@@ -10,6 +10,11 @@
     transform: translateX(0%);
   }
 
+  .back-button,
+  .close-button {
+    width: 30px;
+  }
+
   .back-button {
     position: absolute;
     top: 20px;

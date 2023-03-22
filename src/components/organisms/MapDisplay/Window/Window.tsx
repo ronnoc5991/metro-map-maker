@@ -21,6 +21,8 @@ import ButtonList from "../../ButtonList/ButtonList";
 import config from "./config/config";
 import { WorldMap } from "../../../../App/reducers/mapReducer";
 import "./styles.scss";
+import Button from "../../../molecules/Button/Button";
+import Icon from "../../../atoms/Icon/Icon";
 
 type WindowProps = BaseComponentProps & {
   map: WorldMap;
@@ -170,9 +172,13 @@ const Window: FunctionComponent<WindowProps> = ({
       />
       <ButtonList
         className="zoom-buttons"
-        buttonProps={[
-          { icon: "plus", onClick: onZoomIn },
-          { icon: "minus", onClick: onZoomOut },
+        buttons={[
+          <Button title="Zoom In" onClick={onZoomIn}>
+            <Icon name="plus" />
+          </Button>,
+          <Button title="Zoom Out" onClick={onZoomOut}>
+            <Icon name="minus" />
+          </Button>,
         ]}
       />
     </div>

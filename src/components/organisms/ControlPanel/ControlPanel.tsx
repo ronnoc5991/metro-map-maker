@@ -8,6 +8,7 @@ import {
 } from "./hooks/useControlPanelStack";
 import "./styles.scss";
 import { FrameGetter } from "./types";
+import Icon from "../../atoms/Icon/Icon";
 
 type Props = BaseComponentProps & {
   stack: ControlPanelStack;
@@ -27,18 +28,20 @@ const ControlPanel: FunctionComponent<Props> = ({
     >
       {size > 1 && (
         <Button
-          icon="back"
           title="Back"
           onClick={() => stackDispatch({ type: "pop" })}
           className="back-button"
-        />
+        >
+          <Icon name="back" />
+        </Button>
       )}
       <Button
-        icon="close"
         title="Close"
         onClick={() => stackDispatch({ type: "clear" })}
         className="close-button"
-      />
+      >
+        <Icon name="close" />
+      </Button>
       {topFrame && topFrame()}
     </div>
   );

@@ -47,7 +47,7 @@ const WindowViewportInterpreter: FunctionComponent<Props> = ({
   visibleLineSegments,
   className,
 }) => {
-  const { stations } = map;
+  const { stations, lines } = map;
 
   const getTranslatedClickEventHandler = (
     callback: CustomClickEventHandler
@@ -134,6 +134,7 @@ const WindowViewportInterpreter: FunctionComponent<Props> = ({
           viewportDimensions,
           windowBounds
         ),
+        color: lines[lineSegment.parentLineId].color,
       };
     })
     .filter((curve) => !!curve);
