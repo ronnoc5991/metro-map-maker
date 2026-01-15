@@ -2,7 +2,7 @@ import { useState } from "react";
 
 export type Stack<Frame> = {
   size: number;
-  topFrame: Frame | undefined;
+  topFrame: Frame | null;
   push: (frame: Frame) => void;
   pop: () => void;
   clear: () => void;
@@ -23,7 +23,7 @@ const useStack = <Frame>(): Stack<Frame> => {
     setStack([]);
   };
 
-  const topFrame = stack.length > 0 ? stack[stack.length - 1] : undefined;
+  const topFrame = stack.length > 0 ? stack[stack.length - 1] : null;
 
   return { size: stack.length, topFrame, push, pop, clear };
 };
