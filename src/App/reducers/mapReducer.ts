@@ -3,9 +3,12 @@ import Line from "../../classes/Line";
 import LineSegment from "../../classes/LineSegment";
 import Station from "../../classes/Station";
 import { Position } from "../../types/Position";
+import uniqueId from "../../utils/uniqueId";
+
+// TODO: if we persist maps... the 'uniqueid' will no longer work correctly
+// because on reload it will reset to 0. We need a better way of generating unique ids
 
 export type WorldMap = {
-  uniqueId: number;
   stations: Record<Station["id"], Station>;
   lineSegments: Record<LineSegment["id"], LineSegment>;
   lines: Record<Line["id"], Line>;
@@ -53,7 +56,6 @@ export type WorldMapAction =
     };
 
 export const emptyWorldMap: WorldMap = {
-  uniqueId: 0,
   stations: {},
   lines: {},
   lineSegments: {},
@@ -65,11 +67,10 @@ const worldMapReducer: Reducer<WorldMap, WorldMapAction> = (
 ) => {
   switch (action.type) {
     case "create-line": {
-      const newLine = new Line(worldMap.uniqueId);
+      const newLine = new Line(uniqueId());
 
       return {
         ...worldMap,
-        uniqueId: worldMap.uniqueId + 1,
         lines: {
           ...worldMap.lines,
           [newLine.id]: newLine,
@@ -77,11 +78,10 @@ const worldMapReducer: Reducer<WorldMap, WorldMapAction> = (
       };
     }
     case "create-station": {
-      const newStation = new Station(action.position, worldMap.uniqueId);
+      const newStation = new Station(action.position, uniqueId());
 
       return {
         ...worldMap,
-        uniqueId: worldMap.uniqueId + 1,
         stations: {
           ...worldMap.stations,
           [newStation.id]: newStation,
@@ -110,7 +110,7 @@ const worldMapReducer: Reducer<WorldMap, WorldMapAction> = (
 
       const newLineSegment = new LineSegment(
         involvedStationCopies,
-        worldMap.uniqueId,
+        uniqueId(),
         action.parentLineId
       );
 
@@ -128,7 +128,6 @@ const worldMapReducer: Reducer<WorldMap, WorldMapAction> = (
       ];
 
       return {
-        uniqueId: worldMap.uniqueId + 1,
         lines: {
           ...worldMap.lines,
           [newParentLine.id]: newParentLine,
