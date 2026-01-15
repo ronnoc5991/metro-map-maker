@@ -1,5 +1,6 @@
 import { sizes } from "../config";
 import { Position } from "../types/Position";
+import uniqueId from "../utils/uniqueId";
 import LineSegment from "./LineSegment";
 
 export default class Station {
@@ -7,8 +8,9 @@ export default class Station {
 
   public name: string;
   public connectedLineSegmentIds: Array<LineSegment["id"]> = [];
+  public readonly id = uniqueId();
 
-  constructor(public position: Position, public id: number) {
+  constructor(public readonly position: Position) {
     this.name = `New Station`;
   }
 }

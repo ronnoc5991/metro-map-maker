@@ -3,6 +3,7 @@ import Line from "./Line";
 import { Position } from "../types/Position";
 import { sizes } from "../config";
 import getEuclideanDistanceBetweenPoints from "../utils/getEuclideanDistanceBetweenPoints";
+import uniqueId from "../utils/uniqueId";
 
 export default class LineSegment {
   static width = sizes.lineSegmentWidth;
@@ -11,13 +12,10 @@ export default class LineSegment {
   public stationIds: [Station["id"], Station["id"]];
   public controlPointOne: Position;
   public controlPointTwo: Position;
+  public readonly id = uniqueId();
   // public isBeingEdited: boolean = true;
 
-  constructor(
-    stations: [Station, Station],
-    public readonly id: number,
-    public parentLineId: Line["id"]
-  ) {
+  constructor(stations: [Station, Station], public parentLineId: Line["id"]) {
     this.stationIds = [stations[0].id, stations[1].id];
     this.weight = getEuclideanDistanceBetweenPoints(
       stations[0].position,

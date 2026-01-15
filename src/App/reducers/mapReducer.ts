@@ -3,7 +3,6 @@ import Line from "../../classes/Line";
 import LineSegment from "../../classes/LineSegment";
 import Station from "../../classes/Station";
 import { Position } from "../../types/Position";
-import uniqueId from "../../utils/uniqueId";
 
 // TODO: if we persist maps... the 'uniqueid' will no longer work correctly
 // because on reload it will reset to 0. We need a better way of generating unique ids
@@ -13,6 +12,20 @@ export type WorldMap = {
   lineSegments: Record<LineSegment["id"], LineSegment>;
   lines: Record<Line["id"], Line>;
 };
+
+// basically CRUD operations on stations, lines, and line segments
+// are we actually managing a GRAPH here?
+// should the language reflect that?
+// what about updating station names and what not?
+// there is an underlying graph (vertices with positions and edges with weights connecting those vertices)
+// is there a way to represent the graph minimally.... and then add the extra data on top of that?
+// what is the extra data? the names of the stations, colors of the lines, name of line
+
+// how can we make a station a vertex?
+// is this worldMap really a graph?
+// or is the graph something we create on the fly?
+// if we want undo/redo... it makes sense to keep copies of graphs around...
+//
 
 export type WorldMapAction =
   | {
@@ -67,7 +80,7 @@ const worldMapReducer: Reducer<WorldMap, WorldMapAction> = (
 ) => {
   switch (action.type) {
     case "create-line": {
-      const newLine = new Line(uniqueId());
+      const newLine = new Line();
 
       return {
         ...worldMap,
@@ -78,7 +91,7 @@ const worldMapReducer: Reducer<WorldMap, WorldMapAction> = (
       };
     }
     case "create-station": {
-      const newStation = new Station(action.position, uniqueId());
+      const newStation = new Station(action.position);
 
       return {
         ...worldMap,
@@ -110,7 +123,6 @@ const worldMapReducer: Reducer<WorldMap, WorldMapAction> = (
 
       const newLineSegment = new LineSegment(
         involvedStationCopies,
-        uniqueId(),
         action.parentLineId
       );
 
