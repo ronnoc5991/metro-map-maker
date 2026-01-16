@@ -139,8 +139,8 @@ class ShortestPathAlgorithm {
 
 export class AStar extends ShortestPathAlgorithm {
   private static h: Heuristic = (v1: Vertex, v2: Vertex) => {
-    const startPosition = { x: v1.x, y: v1.y };
-    const endPosition = { x: v2.x, y: v2.y };
+    const startPosition = v1.position;
+    const endPosition = v2.position;
     return Math.sqrt(
       Math.pow(Math.abs(startPosition.x - endPosition.x), 2) +
         Math.pow(Math.abs(startPosition.y - endPosition.y), 2)
