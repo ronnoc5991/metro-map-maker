@@ -16,19 +16,19 @@ const ControlPanelControls: FunctionComponent<Props> = ({ className }) => {
       className={clsx(className)}
       buttons={[
         <Button
-          title="Open Stations List"
+          title="Open Stations Manager"
           onClick={() => dispatch({ type: "open-stations-list", props: {} })}
         >
           <Icon name="station" />
         </Button>,
         <Button
-          title="Open Lines List"
+          title="Open Lines Manager"
           onClick={() => dispatch({ type: "open-lines-list", props: {} })}
         >
           <Icon name="line" />
         </Button>,
         <Button
-          title="Open Route Planner"
+          title="Plan a Route"
           onClick={() => dispatch({ type: "open-route-planner", props: {} })}
         >
           <Icon name="directions" />
